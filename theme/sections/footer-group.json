@@ -72,6 +72,9 @@
         "show_top_border": true,
         "padding_top": 72,
         "padding_bottom": 0,
+        "columns_desktop": "4",
+        "wide_first_column": true,
+        "columns_mobile": "2",
         "policy_menu": "policies",
         "show_payment_icons": true
       }
