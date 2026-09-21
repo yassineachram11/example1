@@ -49,7 +49,7 @@
 
           <tr>
             <td class="px" align="left" style="padding:18px 40px 0 40px; font-family:Helvetica,Arial,sans-serif; font-size:16px; line-height:25px; color:#3d3a35;">
-              Hi Yassine, you didn't quite finish your order.
+              Hi {{ checkout.customer.first_name | default: 'there' }}, you didn't quite finish your order.
               It's still saved, and still in stock.
             </td>
           </tr>
@@ -57,19 +57,19 @@
           <tr>
             <td class="px" style="padding:26px 40px 0 40px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                
+                {% for line in checkout.line_items %}
                 <tr>
                   <td valign="top" width="72" style="width:72px; padding-bottom:14px;">
-                    <img src="https://cdn.shopify.com/s/files/1/1088/3822/4221/files/Pillow_Photo_Edit_d7531420-3ec7-4e56-bccd-f3fc8237e512.png?v=1789916553" width="72" alt="Pilo 1.0" style="width:72px; border-radius:8px; background-color:#f4f2ee;" />
+                    <img src="{{ line.image | img_url: '300x' }}" width="72" alt="{{ line.title }}" style="width:72px; border-radius:8px; background-color:#f4f2ee;" />
                   </td>
                   <td valign="top" style="padding:0 0 14px 16px; font-family:Helvetica,Arial,sans-serif;">
-                    <div style="font-size:16px; line-height:22px; color:#1a1a1a; font-weight:bold;">Pilo 1.0</div>
+                    <div style="font-size:16px; line-height:22px; color:#1a1a1a; font-weight:bold;">{{ line.title }}</div>
                     <div style="font-size:14px; line-height:20px; color:#6b665e; padding-top:3px;">
-                      2-pack &middot; Qty 1 &middot; $150.00
+                      {% if line.variant_title %}{{ line.variant_title }} &middot; {% endif %}Qty {{ line.quantity }} &middot; {{ line.line_price | money }}
                     </div>
                   </td>
                 </tr>
-                
+                {% endfor %}
               </table>
             </td>
           </tr>
@@ -79,7 +79,7 @@
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="center" bgcolor="#1a1a1a" style="border-radius:999px;">
-                    <a href="https://piloshop.com/checkout" target="_blank"
+                    <a href="{{ url }}" target="_blank"
                        style="display:inline-block; padding:16px 38px; font-family:Helvetica,Arial,sans-serif; font-size:16px; font-weight:bold; line-height:20px; color:#ffffff; text-decoration:none; border-radius:999px;">
                       Finish my order &rarr;
                     </a>
@@ -92,7 +92,7 @@
           <tr>
             <td class="px" align="left" style="padding:30px 40px 36px 40px; font-family:Helvetica,Arial,sans-serif; font-size:16px; line-height:25px; color:#3d3a35;">
               Sleep well,<br />
-              Yassine<br />
+              {{ SIGNER_NAME }}<br />
               <span style="color:#8a857c; font-size:14px;">Pilo Shop &mdash; just hit reply, a human reads it</span>
             </td>
           </tr>
@@ -100,7 +100,7 @@
           <tr>
             <td class="px" align="center" style="padding:22px 40px 28px 40px; font-family:Helvetica,Arial,sans-serif; font-size:12px; line-height:19px; color:#8a857c; border-top:1px solid #eae6df;">
               You're getting this because you started an order at piloshop.com.<br />
-              <a href="#" style="color:#8a857c; text-decoration:underline;">Unsubscribe</a> &nbsp;&middot;&nbsp; Beirut, Lebanon
+              <a href="{{ unsubscribe_url }}" style="color:#8a857c; text-decoration:underline;">Unsubscribe</a> &nbsp;&middot;&nbsp; {{ SHOP_ADDRESS }}
             </td>
           </tr>
 
