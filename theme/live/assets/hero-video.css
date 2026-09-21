@@ -62,6 +62,61 @@
     height: auto;
   }
 
+  /* Banner layout: lift the video out from behind the text and put it below.
+     The copy then sits on the page, not over the footage. */
+  .hero--banner.hero--mobile-unbanner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero--banner.hero--mobile-unbanner .hero__inner {
+    order: 1;
+    min-height: 0;
+    padding-block: var(--space-2xl);
+  }
+
+  .hero--banner.hero--mobile-unbanner .hero__overlay { display: none; }
+
+  .hero--banner.hero--mobile-unbanner .hero__bg {
+    order: 2;
+    /* width:auto, because the banner rule sets 100% and the side margins below
+       would then push the block past the viewport. */
+    width: auto;
+    height: auto;
+    margin-inline: var(--page-gutter);
+    margin-bottom: var(--space-2xl);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .hero--banner.hero--mobile-unbanner .hero__bg video,
+  .hero--banner.hero--mobile-unbanner .hero__bg img {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: var(--hero-video-ratio-m, var(--hero-video-ratio, 16 / 9));
+    object-fit: var(--hero-video-fit-m, var(--hero-video-fit, cover));
+    transform: scale(var(--hero-video-zoom-m, var(--hero-video-zoom, 1)));
+  }
+
+  .hero--banner.hero--mobile-unbanner.hero--mobile-auto-ratio .hero__bg video,
+  .hero--banner.hero--mobile-unbanner.hero--mobile-auto-ratio .hero__bg img {
+    aspect-ratio: auto;
+  }
+
+  /* Light banner text would vanish against the page once it is no longer over
+     the footage, so put the normal colours back. */
+  .hero--banner.hero--mobile-unbanner.hero--light-text .hero__title {
+    color: var(--color-text);
+  }
+
+  .hero--banner.hero--mobile-unbanner.hero--light-text .hero__subtitle,
+  .hero--banner.hero--mobile-unbanner.hero--light-text .hero__trust-item {
+    color: var(--color-text-muted);
+    opacity: 1;
+  }
+
   /* Side by side: keep the two columns instead of stacking. */
   .hero--split.hero--mobile-side .hero__inner {
     grid-template-columns: minmax(0, 1fr) minmax(0, var(--hero-mobile-media-width, 45%));

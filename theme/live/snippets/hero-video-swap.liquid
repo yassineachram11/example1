@@ -1,0 +1,41 @@
+{%- comment -%}
+  One <video> whose source switches at 750px, so a phone never downloads the
+  desktop file. Rendering two elements and hiding one would fetch both.
+
+  Accepts: desktop_src, mobile_src, poster_desktop, poster_mobile, class
+{%- endcomment -%}
+<video
+  class="hero__video {{ class }}"
+  poster="{{ poster_desktop }}"
+  data-src-desktop="{{ desktop_src }}"
+  data-src-mobile="{{ mobile_src }}"
+  data-poster-mobile="{{ poster_mobile }}"
+  autoplay
+  loop
+  muted
+  playsinline
+  disableremoteplayback
+></video>
+<script>
+  (function () {
+    var video = document.currentScript.previousElementSibling;
+    var mq = window.matchMedia('(max-width: 749px)');
+    function apply() {
+      var src = mq.matches ? video.dataset.srcMobile : video.dataset.srcDesktop;
+      if (!src || video.getAttribute('src') === src) return;
+      if (mq.matches && video.dataset.posterMobile) {
+        video.setAttribute('poster', video.dataset.posterMobile);
+      }
+      video.setAttribute('src', src);
+      video.load();
+      var played = video.play();
+      if (played && played.catch) played.catch(function () {});
+    }
+    apply();
+    if (mq.addEventListener) { mq.addEventListener('change', apply); }
+    else if (mq.addListener) { mq.addListener(apply); }
+  })();
+</script>
+<noscript>
+  <video src="{{ desktop_src }}" autoplay loop muted playsinline></video>
+</noscript>

@@ -22,6 +22,17 @@
   endif
 
   comment
+    Banner layout on mobile: 'below' lifts the video out from behind the text
+    and drops it underneath, so the copy sits on the page rather than over it.
+  endcomment
+  if section.settings.layout == 'banner' and section.settings.mobile_banner_media == 'below'
+    assign modifier = modifier | append: ' hero--mobile-unbanner'
+    if section.settings.mobile_custom_video and section.settings.mobile_video_ratio == 'auto'
+      assign modifier = modifier | append: ' hero--mobile-auto-ratio'
+    endif
+  endif
+
+  comment
     Mobile: 'side' keeps text and media beside each other below 750px
     instead of stacking them.
   endcomment
@@ -36,8 +47,23 @@
     A separate mobile video is swapped in on one <video> element rather than
     rendering two, so phones never download the desktop file.
   endcomment
-  assign desktop_src = section.settings.video.sources | where: 'format', 'mp4' | first
-  assign mobile_src = section.settings.mobile_video.sources | where: 'format', 'mp4' | first
+  comment
+    sources is ordered lowest quality first, so 'first' would hand desktop a
+    480p rendition. Take the largest mp4 for desktop, and for mobile the
+    largest that is still no wider than 720px, since the phone column is only
+    a few hundred pixels across and the whole point is to save mobile data.
+  endcomment
+  assign desktop_mp4 = section.settings.video.sources | where: 'format', 'mp4' | sort: 'width'
+  assign desktop_src = desktop_mp4 | last
+  assign mobile_mp4 = section.settings.mobile_video.sources | where: 'format', 'mp4' | sort: 'width'
+  assign mobile_src = mobile_mp4 | last
+  for source in mobile_mp4
+    if source.width <= 720
+      assign mobile_src = source
+    endif
+  endfor
+  assign poster_desktop = section.settings.video.preview_image | image_url: width: 1600
+  assign poster_mobile = section.settings.mobile_video.preview_image | image_url: width: 900
   assign use_swap = false
   if section.settings.mobile_video != blank and desktop_src != blank and mobile_src != blank
     assign use_swap = true
@@ -46,7 +72,7 @@
 
 {{ 'hero-extras.css' | asset_url | stylesheet_tag }}
 
-{%- if section.settings.video != blank or section.settings.mobile_layout == 'side' -%}
+{%- if section.settings.video != blank or section.settings.mobile_layout == 'side' or section.settings.mobile_banner_media == 'below' -%}
   {{ 'hero-video.css' | asset_url | stylesheet_tag }}
 {%- endif -%}
 
@@ -69,16 +95,26 @@
   {%- if section.settings.layout == 'banner' -%}
     <div class="hero__bg">
       {%- if section.settings.video != blank -%}
-        {{
-          section.settings.video
-          | video_tag:
-            image_size: '1600x',
-            autoplay: true,
-            loop: true,
-            muted: true,
-            controls: false,
+        {%- if use_swap -%}
+          {%- render 'hero-video-swap',
+            desktop_src: desktop_src.url,
+            mobile_src: mobile_src.url,
+            poster_desktop: poster_desktop,
+            poster_mobile: poster_mobile,
             class: 'reveal reveal--zoom'
-        }}
+          -%}
+        {%- else -%}
+          {{
+            section.settings.video
+            | video_tag:
+              image_size: '1600x',
+              autoplay: true,
+              loop: true,
+              muted: true,
+              controls: false,
+              class: 'reveal reveal--zoom'
+          }}
+        {%- endif -%}
       {%- elsif section.settings.image != blank -%}
         {{
           section.settings.image
@@ -164,41 +200,12 @@
         >
           {%- if section.settings.video != blank -%}
             {%- if use_swap -%}
-              <video
-                class="hero__video"
-                poster="{{ section.settings.video.preview_image | image_url: width: 1200 }}"
-                data-src-desktop="{{ desktop_src.url }}"
-                data-src-mobile="{{ mobile_src.url }}"
-                data-poster-mobile="{{ section.settings.mobile_video.preview_image | image_url: width: 800 }}"
-                autoplay
-                loop
-                muted
-                playsinline
-                disableremoteplayback
-              ></video>
-              <script>
-                (function () {
-                  var video = document.currentScript.previousElementSibling;
-                  var mq = window.matchMedia('(max-width: 749px)');
-                  function apply() {
-                    var src = mq.matches ? video.dataset.srcMobile : video.dataset.srcDesktop;
-                    if (video.getAttribute('src') === src) return;
-                    if (mq.matches && video.dataset.posterMobile) {
-                      video.setAttribute('poster', video.dataset.posterMobile);
-                    }
-                    video.setAttribute('src', src);
-                    video.load();
-                    var played = video.play();
-                    if (played && played.catch) played.catch(function () {});
-                  }
-                  apply();
-                  if (mq.addEventListener) { mq.addEventListener('change', apply); }
-                  else if (mq.addListener) { mq.addListener(apply); }
-                })();
-              </script>
-              <noscript>
-                <video src="{{ desktop_src.url }}" autoplay loop muted playsinline></video>
-              </noscript>
+              {%- render 'hero-video-swap',
+                desktop_src: desktop_src.url,
+                mobile_src: mobile_src.url,
+                poster_desktop: poster_desktop,
+                poster_mobile: poster_mobile
+              -%}
             {%- else -%}
               {{
                 section.settings.video
@@ -406,6 +413,17 @@
       ],
       "default": "stacked",
       "info": "Split layout only."
+    },
+    {
+      "type": "select",
+      "id": "mobile_banner_media",
+      "label": "Mobile video placement",
+      "options": [
+        { "value": "background", "label": "Behind the text (background)" },
+        { "value": "below", "label": "Under the text" }
+      ],
+      "default": "background",
+      "info": "Banner layout only. 'Under the text' drops the video below the copy on phones."
     },
     {
       "type": "select",

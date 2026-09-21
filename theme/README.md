@@ -8,6 +8,9 @@ themes had already diverged.
 | `live/` | `azure-theme` (`210145935709`, **published**) | Not applied. Apply by hand when ready. |
 | `staging/` | `azure-theme (staging)` (`210249285981`) | **Pushed and verified** — checksums match. |
 
+Each folder holds `sections/hero.liquid`, `assets/hero-video.css` and
+`snippets/hero-video-swap.liquid`.
+
 Staging was ahead of live: it already carried a `color_scheme` dark mode, a
 `price` / `price_note` line and `hero-extras.css`, none of which exist on live. The
 `staging/` copy keeps all of it. Do not push `live/` files to staging or you will delete
@@ -18,18 +21,34 @@ Both copies were verified byte-exact: stripping the mobile additions back out of
 reproduces its own theme's original MD5 (`dea5fc78…` for live, `7937030f…` for staging).
 `assets/hero-video.css` was identical on both themes, so the same updated file serves both.
 
+## Which layout your homepage uses
+
+This matters, because the settings split by layout:
+
+- **live** `azure-theme` homepage → `layout: split` (text beside video)
+- **staging** homepage → `layout: banner` (video full-bleed behind the text)
+
 ## What you get in the theme editor
 
 Under **Hero → Mobile** (all below 750px only; desktop untouched):
 
-- **Mobile layout** — *Stacked* (current behaviour) or **Side by side**
-- **Video side** — left or right, independent of the desktop setting
-- **Video column width** — 30–60% of the screen, default 45%
-- **Mobile video** — optional separate file, e.g. a vertical cut
-- **Use different video framing on mobile** — separate shape, fit and zoom for phones
+| Setting | Applies to |
+|---|---|
+| **Mobile video placement** — *Behind the text* or **Under the text** | banner layout |
+| **Mobile layout** — *Stacked* or **Side by side** | split layout |
+| **Video side** / **Video column width** | split, side-by-side mode |
+| **Mobile video** — optional separate file for phones | both layouts |
+| **Use different video framing on mobile** — shape, fit, zoom | both layouts |
 
-Defaults reproduce today's stacked layout exactly, so nothing changes until you switch
-**Mobile layout** to *Side by side*.
+Defaults reproduce current behaviour exactly on both layouts, so nothing changes until
+you switch **Mobile video placement** (banner) or **Mobile layout** (split).
+
+### Banner layout: video under the text
+
+On phones the section turns into a column: copy first, video below it in a rounded frame
+at the mobile frame shape. The overlay is dropped, and light banner text is reverted to
+the normal page colours — white-on-white would otherwise make the heading invisible once
+it is no longer sitting over footage.
 
 ## Measured on a 390px viewport
 
