@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <title>We're clearing your cart tonight</title>
+  <style type="text/css">
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
+    body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+    @media screen and (max-width: 600px) {
+      .container { width: 100% !important; }
+      .px { padding-left: 24px !important; padding-right: 24px !important; }
+      .h1 { font-size: 26px !important; line-height: 32px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f2ee;">
+
+  <!-- Inbox preview text, hidden in the body -->
+  <div style="display:none; font-size:1px; color:#f4f2ee; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">
+    After tonight you'd be starting over. Last email about it, promise.
+    &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  </div>
+
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f4f2ee;">
+    <tr>
+      <td align="center" style="padding:32px 12px 48px 12px;">
+
+        <table role="presentation" class="container" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; background-color:#ffffff; border-radius:14px;">
+
+          <tr>
+            <td class="px" align="center" style="padding:32px 40px 0 40px; font-family:Helvetica,Arial,sans-serif; font-size:18px; letter-spacing:3px; font-weight:bold; color:#1a1a1a;">
+              PILO
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" align="left" style="padding:32px 40px 0 40px;">
+              <h1 class="h1" style="margin:0; font-family:Georgia,'Times New Roman',serif; font-size:30px; line-height:36px; color:#1a1a1a; font-weight:normal;">
+                We&rsquo;re clearing your cart tonight.
+              </h1>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" align="left" style="padding:18px 40px 0 40px; font-family:Helvetica,Arial,sans-serif; font-size:16px; line-height:25px; color:#3d3a35;">
+              Hi {{ checkout.customer.first_name | default: 'there' }}, we&rsquo;ve held this for {{ HOLD_DAYS }} days.
+              After tonight the link stops working and you&rsquo;d be starting from scratch.
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" style="padding:26px 40px 0 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                {% for line in checkout.line_items %}
+                <tr>
+                  <td valign="top" width="72" style="width:72px; padding-bottom:14px;">
+                    <img src="{{ line.image | img_url: '300x' }}" width="72" alt="{{ line.title }}" style="width:72px; border-radius:8px; background-color:#f4f2ee;" />
+                  </td>
+                  <td valign="top" style="padding:0 0 14px 16px; font-family:Helvetica,Arial,sans-serif;">
+                    <div style="font-size:16px; line-height:22px; color:#1a1a1a; font-weight:bold;">{{ line.title }}</div>
+                    <div style="font-size:14px; line-height:20px; color:#6b665e; padding-top:3px;">
+                      {% if line.variant_title %}{{ line.variant_title }} &middot; {% endif %}Qty {{ line.quantity }} &middot; {{ line.line_price | money }}
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" align="left" style="padding:22px 40px 0 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" bgcolor="#1a1a1a" style="border-radius:999px;">
+                    <a href="{{ url }}" target="_blank"
+                       style="display:inline-block; padding:16px 38px; font-family:Helvetica,Arial,sans-serif; font-size:16px; font-weight:bold; line-height:20px; color:#ffffff; text-decoration:none; border-radius:999px;">
+                      Keep my cart &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!--
+            OPTIONAL SWEETENER. This is the only email in the flow where one belongs.
+            Delete this comment's markers to use it, and only if you will honour it.
+            Free shipping protects margin better than 10% off on an $80 product.
+
+          <tr>
+            <td class="px" style="padding:24px 40px 0 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f7f5f1; border-radius:10px;">
+                <tr>
+                  <td align="center" style="padding:18px 24px; font-family:Helvetica,Arial,sans-serif; font-size:15px; line-height:23px; color:#3d3a35;">
+                    Shipping is on us if you finish tonight. It applies automatically at checkout.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          -->
+
+          <tr>
+            <td class="px" align="left" style="padding:24px 40px 0 40px; font-family:Helvetica,Arial,sans-serif; font-size:16px; line-height:25px; color:#3d3a35;">
+              And if the timing is just wrong, that&rsquo;s fine &mdash; this is the last you&rsquo;ll hear about it.
+              But if something specific stopped you, hit reply and tell me what it was. I read every one.
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" align="left" style="padding:26px 40px 36px 40px; font-family:Helvetica,Arial,sans-serif; font-size:16px; line-height:25px; color:#3d3a35;">
+              Sleep well,<br />
+              {{ SIGNER_NAME }}<br />
+              <span style="color:#8a857c; font-size:14px;">Pilo Shop</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="px" align="center" style="padding:22px 40px 28px 40px; font-family:Helvetica,Arial,sans-serif; font-size:12px; line-height:19px; color:#8a857c; border-top:1px solid #eae6df;">
+              You're getting this because you started an order at piloshop.com.<br />
+              <a href="{{ unsubscribe_url }}" style="color:#8a857c; text-decoration:underline;">Unsubscribe</a> &nbsp;&middot;&nbsp; {{ SHOP_ADDRESS }}
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

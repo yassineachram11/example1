@@ -1,39 +1,64 @@
-# Pilo Shop — Abandoned cart email
+# Pilo Shop — Abandoned cart flow
 
-| File | What it is |
-|---|---|
-| `abandoned-cart.html` | **The one to send.** Short: two sentences, the cart, one button. |
-| `abandoned-cart-detailed.html` | Longer version with benefits, objection handling and the 2-pack upsell. Keep it around for email 2 if you ever build a sequence. |
-| `preview.html` / `preview-detailed.html` | Same emails with sample data, for looking at in a browser. |
+Three sends. Each `preview-*.html` is the same email with sample data filled in,
+just to look at in a browser.
+
+| # | When | File | Job |
+|---|---|---|---|
+| 1 | 1 hour after abandonment | `abandoned-cart.html` | Remind. Two sentences, the cart, one button. No discount — most people were simply interrupted, and a coupon an hour in teaches people to abandon carts on purpose. |
+| 2 | +22 hours | `abandoned-cart-detailed.html` | Persuade. Benefits, the two objections that stop a pillow sale, the 2-pack upsell. Still no discount. |
+| 3 | +48 hours | `cart-expired.html` | Close. A real deadline, an open door, and the only place a sweetener belongs. |
+
+Running only #1 is fine and still recovers most of what this flow will ever recover.
+Add #2 and #3 when you want the rest.
 
 Built for **Shopify → Settings → Notifications → Abandoned checkout**
 (Liquid: `checkout.customer.first_name`, `checkout.line_items`, `url`, `unsubscribe_url`).
+Shopify sends one abandoned checkout notification natively — for the full three-send
+sequence you need Klaviyo or similar. SMS copy lives in `../../sms/abandoned-cart.md`.
 
-## Before you send — replace these two
+## Before you send — replace these
 
-| Placeholder | Replace with |
-|---|---|
-| `{{ SIGNER_NAME }}` | A real first name. Emails from a person outperform emails from a brand. |
-| `{{ SHOP_ADDRESS }}` | Your physical address (legally required in most markets). |
+| Placeholder | In | Replace with |
+|---|---|---|
+| `{{ SIGNER_NAME }}` | all | A real first name. Emails from a person outperform emails from a brand. |
+| `{{ SHOP_ADDRESS }}` | all | Your physical address (legally required in most markets). |
+| `{{ HOLD_DAYS }}` | email 3 | How long you actually held the cart, written out ("three"). |
+| `{{ TRIAL_NIGHTS }}` | email 2 | Your trial length. No trial? Delete the block rather than promise one. |
 
-The detailed version also has `{{ TRIAL_NIGHTS }}` — your trial length. If you don't offer a
-trial, delete that block rather than promise one.
-
-On Klaviyo instead? Swap: `person.first_name` for the name,
-`{% for item in event.extra.line_items %}` for the loop, `event.extra.checkout_url` for `url`.
+On Klaviyo, swap: `first_name|default:"there"|title` for the name,
+`{% for item in event.extra.line_items %}` for the loop, `event.extra.checkout_url`
+for `url`, `{% unsubscribe %}` for the unsubscribe link.
 
 ## Subject lines
 
-1. **Your Pilo 1.0 is still in your cart** — preview: *Saved and still in stock.*
-2. **You didn't finish your order** — preview: *Your cart is saved and still in stock.*
-3. **Still thinking it over?** — preview: *Your cart is saved, no rush.*
+**Email 1** — *Your Pilo 1.0 is still in your cart* (preview: *Saved and still in stock.*)
+Alternates: *You didn't finish your order* / *Still thinking it over?*
+Plain beats clever. Naming the product usually earns the most per send, because the
+people who open already know what they want.
 
-Plain beats clever here. Naming the product (#1) usually earns the most revenue per send,
-because the people who open already know what they want. Run #2 against it and keep the winner.
+**Email 2** — *Night one felt strange. Night four I stopped waking up.*
+Lead with a real customer line here, not a made-up one.
 
-## Plain-text version
+**Email 3** — *We're clearing your cart tonight* (preview: *After tonight you'd be starting over.*)
+Alternate without a deadline: *Last note about your cart*
 
-> Hi {{ first_name }}, you didn't quite finish your order. It's still saved, and still in stock.
+## The one rule for email 3
+
+**If it says the cart expires tonight, the cart has to expire tonight.** Stop sending,
+let the recovery link lapse, and don't resurrect the same cart next week. A deadline you
+don't keep is the fastest way to teach people that your deadlines are decoration — and
+they'll wait for the discount every time after that.
+
+If you aren't willing to enforce it, use the no-deadline subject line and cut the
+"after tonight the link stops working" sentence. The email still works as a last note.
+
+The sweetener in email 3 is commented out on purpose. Free shipping protects margin
+better than 10% off on an $80 product. If you turn it on, honour it.
+
+## Plain-text version (email 1)
+
+> Hi {{ first_name }}, your cart is saved — and everything in it is still in stock.
 >
 > Finish my order: {{ url }}
 >
@@ -43,8 +68,8 @@ because the people who open already know what they want. Run #2 against it and k
 >
 > Unsubscribe: {{ unsubscribe_url }}
 
-## Timing
+## Housekeeping
 
-Send it **1 hour** after abandonment, with no discount — most people were simply
-interrupted, and a coupon an hour in teaches people to abandon carts on purpose.
-Suppress anyone who has since bought.
+- Suppress anyone who bought between the abandonment and the send, on every step.
+- Cap the flow so a serial browser isn't getting all three every week.
+- Exit the flow on purchase, obviously — check this before you turn it on, not after.
