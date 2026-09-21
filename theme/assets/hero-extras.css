@@ -24,6 +24,22 @@
   color: var(--color-text-muted);
 }
 
+/* Banner layout.
+   base.css already turns the title, subtitle and trust row white over the
+   photo, but it predates the price line, so those two need the same
+   treatment — and the row centres with the rest of the content. */
+.hero--banner .hero__price {
+  justify-content: center;
+}
+
+.hero--banner.hero--light-text .hero__price-amount {
+  color: #ffffff;
+}
+
+.hero--banner.hero--light-text .hero__price-note {
+  color: rgba(255, 255, 255, 0.86);
+}
+
 /* Dark treatment.
    The theme already has a light-text path for the banner layout; this is the
    equivalent for the split layout, where the background is a solid fill
