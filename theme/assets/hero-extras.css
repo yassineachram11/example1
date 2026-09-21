@@ -1,0 +1,91 @@
+/* Hero additions — loaded by sections/hero.liquid.
+   Two things base.css doesn't cover: the price line, and an optional dark
+   treatment for the split layout. Both are inert unless the section turns
+   them on, so the hero looks exactly as before with the defaults. */
+
+.hero__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.hero__price-amount {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-2xl);
+  line-height: 1;
+  color: var(--color-text);
+}
+
+.hero__price-note {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Dark treatment.
+   The theme already has a light-text path for the banner layout; this is the
+   equivalent for the split layout, where the background is a solid fill
+   rather than a photo. Every colour here is checked against the fill for
+   contrast, so the muted greys of the light theme are replaced rather than
+   reused. */
+.hero--dark {
+  background: var(--hero-dark-bg, #2c3845);
+}
+
+.hero--dark .hero__title,
+.hero--dark .hero__price-amount {
+  color: #ffffff;
+}
+
+.hero--dark .hero__title em {
+  color: #9FB6CE;
+}
+
+.hero--dark .eyebrow {
+  color: #9FB6CE;
+}
+
+.hero--dark .hero__subtitle,
+.hero--dark .hero__price-note,
+.hero--dark .hero__trust-item {
+  color: #C7D4E2;
+}
+
+.hero--dark .hero__trust {
+  border-top-color: rgba(255, 255, 255, 0.18);
+}
+
+.hero--dark .hero__trust-item svg {
+  color: #9FB6CE;
+}
+
+.hero--dark .btn--primary {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #2c3845;
+}
+
+.hero--dark .btn--primary:hover:not([disabled]) {
+  background: #EAF0F7;
+  border-color: #EAF0F7;
+  color: #2c3845;
+}
+
+.hero--dark .btn--secondary {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.42);
+  color: #ffffff;
+}
+
+.hero--dark .btn--secondary:hover:not([disabled]) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.62);
+  color: #ffffff;
+}
+
+.hero--dark .hero__badge {
+  background: #ffffff;
+  color: #2c3845;
+}

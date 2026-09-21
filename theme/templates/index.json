@@ -1,0 +1,259 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "t1": {
+          "type": "trust",
+          "settings": {
+            "icon": "truck",
+            "text": "Free delivery, 1–5 days"
+          }
+        },
+        "t2": {
+          "type": "trust",
+          "settings": {
+            "icon": "spark",
+            "text": "OEKO-TEX certified fabric"
+          }
+        },
+        "t3": {
+          "type": "trust",
+          "settings": {
+            "icon": "shield",
+            "text": "Support 7/7"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "settings": {
+        "layout": "split",
+        "color_scheme": "dark",
+        "eyebrow": "Now available",
+        "heading": "The Science of <em>Perfect Sleep</em>.",
+        "subheading": "<p>Adaptive memory foam that contours in seconds and holds its shape until morning. Neutral neck alignment, back or side.</p>",
+        "price": "$80",
+        "price_note": "or two for $150",
+        "button_label": "Shop Pilo 1.0",
+        "button_link": "shopify://products/pilo-1-0",
+        "button_label_2": "See how it works",
+        "button_link_2": "/#shopify-section-sequence",
+        "video": "shopify://files/videos/2026-04-17-enhanced-product-video-4k.mp4",
+        "video_fit": "contain",
+        "video_ratio": "16 / 9",
+        "video_zoom": 100,
+        "image_position": "right",
+        "min_height": 620,
+        "overlay_opacity": 40,
+        "text_color": "light",
+        "show_badge": false,
+        "badge_title": "4.9 out of 5",
+        "badge_text": "from 2,400+ reviews"
+      }
+    },
+    "1789728871b62e120b": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_cards_carousel_VFC89J": {
+          "type": "shopify://apps/judge-me-reviews/blocks/cards_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "show_sample_reviews": true,
+            "reviews_selection": "all",
+            "products": [],
+            "filter_pinned": false,
+            "filter_featured": false,
+            "filter_custom_tags": "",
+            "star_rating": "all",
+            "show_review_media": true,
+            "display_order": "media_first",
+            "no_image_fallback": "review_text_only",
+            "max_reviews": 20,
+            "review_length": "medium",
+            "text_size": "medium",
+            "image_ratio": "1",
+            "reviews_shown": 4,
+            "show_reviewer_name": true,
+            "show_product_name": true,
+            "hide_arrows_mobile": true,
+            "arrows_position": "sides",
+            "max_width": 1100,
+            "corner_styling": "soft",
+            "header_text_color": "#000000",
+            "text_color": "#000000",
+            "card_color": "#f9f9f9",
+            "stars_color": "",
+            "arrows_color": "#000000",
+            "transition_speed": 5,
+            "header_text": "Customers are saying",
+            "show_average_rating": true,
+            "rating_display": "default"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_cards_carousel_VFC89J"
+      ],
+      "settings": {}
+    },
+    "value-props": {
+      "type": "value-props",
+      "blocks": {
+        "v1": {
+          "type": "item",
+          "settings": {
+            "icon": "refresh",
+            "title": "Washable Cover",
+            "text": "The cooling cover zips off and goes straight in the machine."
+          }
+        },
+        "v2": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Free & Fast Shipping",
+            "text": "Free delivery on every order, typically within 1–5 days."
+          }
+        },
+        "v3": {
+          "type": "item",
+          "settings": {
+            "icon": "spark",
+            "title": "OEKO-TEX certified fabric",
+            "text": "Adaptive contour foam and a breathable, durable cooling cover."
+          }
+        },
+        "v4": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "7/7 Support",
+            "text": "Our team is reachable every day of the week."
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "settings": {
+        "heading": "Why Pilo ?",
+        "background": "#f8fafc"
+      }
+    },
+    "sequence": {
+      "type": "scroll-sequence",
+      "settings": {
+        "base_image_url": "https://cdn.shopify.com/s/files/1/1088/3822/4221/files/ezgif-frame-",
+        "image_suffix": ".jpg?v=1788509549",
+        "start_frame": 1,
+        "end_frame": 28,
+        "frame_digits": 3,
+        "frame_width": "1600",
+        "scroll_height": 250,
+        "smoothing": 12,
+        "crossfade": true,
+        "eyebrow": "Inside Pilo",
+        "heading": "Engineered Layer by Layer",
+        "text": "<p>Discover the ergonomic core and breathable materials designed for restorative sleep.</p>",
+        "text_alignment": "center",
+        "alt_text": "The Pilo 1.0 pillow separating into its ergonomic core and breathable cover layers.",
+        "show_hint": true,
+        "hint_text": "Scroll",
+        "max_width": 850,
+        "canvas_height": 60,
+        "background": "#ffffff"
+      }
+    },
+    "who-is-it-for": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/Gemini_Generated_Image_t8lwbt8lwbt8lwbt_6477d86f-0538-446d-815b-77a392ca4581.png",
+        "image_position": "right",
+        "eyebrow": "Who is it for",
+        "heading": "Who is it for?",
+        "text": "<p>If you're tired of waking up with a stiff neck, suffer from migraines, or spend your days hunched over a desk, Pilo is your solution.</p>",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "designed": {
+      "type": "rich-text",
+      "settings": {
+        "eyebrow": "Protect your back",
+        "heading": "Designed for your neck.",
+        "text": "<p>Experience perfect alignment with adaptive contour foam that instantly relieves neck tension. Wrapped in a breathable cooling cover, the Pilo 1.0 keeps you comfortable and supported all night long. Minimalist design, uncompromising comfort.</p>",
+        "button_label": "Discover the difference good sleep makes",
+        "button_link": "shopify://products/pilo-1-0"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "What is the return policy?",
+            "answer": "<p>For health, safety, and hygienic reasons, Pilo pillows can only be returned if they are unopened, unused, and in their original, sealed packaging.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "When will I get my order?",
+            "answer": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location (between 1–5 days).</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How much does shipping cost?",
+            "answer": "<p>It's FREE!</p>"
+          }
+        },
+        "question_tB3gYX": {
+          "type": "question",
+          "settings": {
+            "question": "What does OEKO-TEX® certified mean?",
+            "answer": "<p>OEKO-TEX® STANDARD 100 is an independent certification for textiles. Every component of a certified item is laboratory tested against a long list of substances known to be harmful to human health — not only the main fabric, but the threads, the zip, and any coatings or prints.</p><p></p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "question_tB3gYX"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "FAQ",
+        "open_first": false,
+        "enable_schema": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "1789728871b62e120b",
+    "value-props",
+    "sequence",
+    "who-is-it-for",
+    "designed",
+    "faq"
+  ]
+}
