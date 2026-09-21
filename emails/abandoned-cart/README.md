@@ -24,10 +24,12 @@ On Klaviyo instead? Swap: `person.first_name` for the name,
 
 ## Subject lines
 
-1. **You left your neck hanging** — preview: *Your cart is saved and still in stock.*
-2. **Your Pilo 1.0 is still in your cart** — preview: *Still in stock. Takes 40 seconds to finish.*
+1. **Your Pilo 1.0 is still in your cart** — preview: *Saved and still in stock.*
+2. **You didn't finish your order** — preview: *Your cart is saved and still in stock.*
+3. **Still thinking it over?** — preview: *Your cart is saved, no rush.*
 
-Curiosity (#1) usually wins opens; clarity (#2) usually wins revenue. Run both, keep the winner.
+Plain beats clever here. Naming the product (#1) usually earns the most revenue per send,
+because the people who open already know what they want. Run #2 against it and keep the winner.
 
 ## Plain-text version
 
