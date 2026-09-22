@@ -231,3 +231,41 @@ origin. Those three are what people actually compare between pillows.
 Blocks live on the *template*, so every product using `product.json` shows the same table.
 That is fine with one product. If you add more, move the values to product metafields and
 read them in the section instead.
+
+---
+
+# Bundle selector — image per pack
+
+`snippets/bundle-option.liquid` + `assets/bundle.js`, in `live/` and `staging/`.
+**Pushed to staging.** Picking a pack row now also swaps the gallery to that variant's
+own image, and landing on `?variant=<id>` shows the right image on load.
+
+## It does nothing until you assign variant images
+
+Right now **neither variant has an image**, and all seven product photos show one pillow.
+There is no two-pillow shot to swap to. Until that changes the code is inert — which is
+why nothing looks different on staging yet.
+
+To turn it on:
+
+1. Shoot (or composite) a photo of two Pilos and upload it to the product's media.
+2. **Products → Pilo 1.0 → Variants → 2-pack → Media** and pick that photo.
+3. Do the same for **1-pack** with the single-pillow hero shot.
+
+Step 3 matters. A variant with no image leaves the gallery untouched — the standard
+Shopify behaviour, and what Dawn does. If only the 2-pack has an image, switching back to
+1-pack leaves the two-pillow photo on screen. Give both variants an image and it reads
+correctly in either direction.
+
+## How it works
+
+The row's radio carries `data-image`, built at `width: 1200` — the same width the
+thumbnails use for `data-full`. `bundle.js` matches that URL against the thumbnails and
+presses the matching one, so the theme's existing preload-and-fade and active-thumb
+handling runs instead of a second copy of it. If the variant image is not among the
+thumbnails it swaps the main image directly.
+
+Verified in a browser against a mock of the real gallery markup plus the thumbnail handler
+copied from `theme.js`: click swaps the image and moves the active thumb, the form's
+variant id follows, a variant without an image leaves the gallery alone, and a preselected
+multi-pack renders its image on load.

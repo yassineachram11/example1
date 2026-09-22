@@ -1,0 +1,72 @@
+{%- comment -%}
+  One row of the bundle selector.
+  Accepts: variant, label, note, badge, units, each, save, override,
+           selected, style ('amount'|'percent'|'none'), show_unit,
+           section_id, attrs
+{%- endcomment -%}
+
+{%- liquid
+  assign saving_text = ''
+  if override != blank
+    assign saving_text = override
+  elsif save > 0 and style != 'none'
+    if style == 'percent'
+      comment
+        gross is what the same number of singles would have cost, so the
+        percentage is measured against that rather than against compare-at.
+      endcomment
+      assign gross = save | plus: variant.price
+      assign pct = save | times: 100 | divided_by: gross
+      if pct > 0
+        assign saving_text = 'products.product.save_percent' | t: percent: pct
+      endif
+    else
+      assign save_money = save | money
+      assign saving_text = 'products.product.save_amount' | t: amount: save_money
+    endif
+  endif
+-%}
+
+<label
+  class="bundle__option{% if selected %} is-selected{% endif %}{% unless variant.available %} is-unavailable{% endunless %}"
+  {{ attrs }}
+>
+  <input
+    type="radio"
+    name="bundle-{{ section_id }}"
+    value="{{ variant.id }}"
+    data-price="{{ variant.price | money }}"
+    data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}"
+    data-available="{{ variant.available }}"
+    {%- comment -%}
+      A variant with its own image swaps the gallery when this row is picked.
+      Built at the same width as the thumbnails' data-full so the two URLs
+      match and bundle.js can reuse the existing thumbnail swap.
+    {%- endcomment -%}
+    {% if variant.featured_media %}data-image="{{ variant.featured_media | image_url: width: 1200 }}" data-image-alt="{{ variant.featured_media.alt | escape }}"{% endif %}
+    {% if selected %}checked{% endif %}
+    {% unless variant.available %}disabled{% endunless %}
+  >
+
+  <span class="bundle__radio" aria-hidden="true"></span>
+
+  <span class="bundle__body">
+    <span class="bundle__name">{{ label }}</span>
+    {%- if note != blank -%}
+      <span class="bundle__meta">{{ note }}</span>
+    {%- elsif show_unit and units > 1 -%}
+      <span class="bundle__meta">{{ each | money }} {{ 'products.product.each' | t }}</span>
+    {%- endif -%}
+  </span>
+
+  <span class="bundle__price">
+    <span class="bundle__amount">{{ variant.price | money }}</span>
+    {%- if saving_text != blank -%}
+      <span class="bundle__save">{{ saving_text }}</span>
+    {%- endif -%}
+  </span>
+
+  {%- if badge != blank -%}
+    <span class="bundle__badge">{{ badge }}</span>
+  {%- endif -%}
+</label>
