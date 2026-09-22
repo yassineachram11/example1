@@ -1,50 +1,48 @@
-# Pilo 1.0 — 2-pack product shot
+# Pilo 1.0 — 2-pack product shots
 
-Two layouts, both 1080 × 1350 (4:5, matching the other product photos), built from
-`pilo-1pack-source.webp` by `make_2pack.py`:
+Three layouts, built from `pilo-1pack-source.webp` by `make_2pack_v2.py`:
 
-- `pilo-2pack-facing.*` — a mirrored pair facing each other (`python3 make_2pack.py facing`)
-- `pilo-2pack.*` — one behind the other, staggered (`python3 make_2pack.py`)
+| File | Layout | Size |
+|---|---|---|
+| `pilo-2pack-behind.*` | second pillow set further back | 1080 × 1350 |
+| `pilo-2pack-stacked.*` | one resting on the other | 1080 × 1350 |
+| `pilo-2pack-tight.*` | the "behind" layout, framed closer | 1080 × 1100 |
 
-## How it was made
+```bash
+python3 make_2pack_v2.py behind    # or stacked, or tight
+```
 
-The pillow fills the frame in the source, so a second copy could not just be offset —
-it ran off the edge. Instead:
+Needs `pillow` and `numpy`.
 
-1. **Mask the pillow.** The black foam separates cleanly on luminance. The white quilted
-   base does not — the bed's satin highlights are just as bright — so the foam mask is
-   smeared downward to carry the base along with it. A morphological opening first,
-   because the plate has a couple of thin bright slivers that otherwise ride along in the
-   alpha and end up pasted on the bed.
-2. **Paint the pillow out of the plate.** Row-wise interpolation across the gap, which
-   works because the bed is smooth satin, then a mild blur confined to the repaired area
-   so the untouched bed keeps its detail.
-3. **Place two copies back** with soft contact shadows. The facing layout mirrors the
-   right-hand one so the two contoured cradles turn toward each other, and keeps the
-   shadow direction the same for both so the scene still has one light source.
+## The background is never touched
 
-The paint-out mask is dilated directionally — generously sideways and downward, barely
-upward. The white base reaches much further right than the foam does, and anything left
-behind shows as a ghost; but dilating up into the wall/bed horizon makes the row-wise
-repair replace that curved edge with a straight one.
+An earlier attempt painted the original pillow out and rebuilt the bed so two smaller
+pillows could sit side by side. That is where the quality went: row-wise interpolation
+gets the colour and gradient right but cannot reproduce satin folds, so the bed came back
+flat and slightly grey, with a visible patch outline. Borrowing grain from the clean bed
+lower down made it worse — stretching that band turns the folds into vertical streaks.
 
-The repair is then tone-matched back down, sampling bed rows only. Sampling the whole
-ring around the hole pulls dark wall pixels into the reference and over-darkens the patch.
+These three place the second pillow where nothing has to be repaired, so the plate stays
+pixel for pixel as shot: real folds, real shadows, real highlights.
 
-The OEKO-TEX badge is part of the original plate and is untouched.
+## How the cut is made
+
+The black foam separates cleanly on luminance. The white quilted base does not — the
+bed's satin highlights are just as bright — so the foam mask is smeared downward to pick
+up the base sitting directly beneath it.
+
+Two details that matter:
+
+- A morphological opening first. The source has a couple of thin bright slivers that
+  otherwise ride along in the alpha and appear pasted on the bed.
+- The skirt is short and tapered. Smearing drags a straight-sided white column under every
+  outer tip of the foam, which reads as a block when the copy sits against the wall.
+
+The added pillow is dimmed very slightly and given a soft contact shadow so it sits at a
+believable distance rather than floating.
 
 ## Honest limits
 
-The repaired bed is flatter and slightly greyer than the original where the pillow used
-to be — row interpolation gets the colour and gradient right but cannot reproduce satin
-folds. It passes as soft depth-of-field falloff at card size; at full screen you can see
-it. Borrowing grain from the clean bed lower down was tried and made it worse: stretching
-that band turns the folds into vertical streaks.
-
-A real photograph of two pillows beats this. Treat it as a stopgap.
-
-Re-run after changing the source or the composition:
-
-```bash
-python3 make_2pack.py     # needs pillow + numpy
-```
+These are composites of one photograph, so both pillows are lit identically and show the
+same creases. It reads fine at product-card size. A real two-pillow photograph is still
+better, and the shot list for that is in `../howto-gifs/README.md`.
