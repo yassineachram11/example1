@@ -1,0 +1,51 @@
+/* Buy buttons — colour, size and radius overrides driven by the block.
+   Every variable falls back to the theme's own value, so a block left at its
+   defaults renders exactly as it did before these settings existed. */
+
+.product__buy-wrap .btn--add,
+.product__buy-wrap .btn--buy-now {
+  border-radius: var(--buy-radius, var(--radius-button));
+}
+
+.product__buy-wrap .btn--add {
+  background-color: var(--buy-add-bg, var(--color-primary));
+  color: var(--buy-add-text, #fff);
+}
+
+.product__buy-wrap .btn--add:hover:not([disabled]) {
+  background-color: var(--buy-add-bg-hover, var(--color-primary-hover));
+  color: var(--buy-add-text, #fff);
+}
+
+.product__buy-wrap .btn--buy-now {
+  width: 100%;
+  margin-top: var(--space-sm);
+  background-color: var(--buy-now-bg, var(--color-text));
+  color: var(--buy-now-text, #fff);
+  box-shadow: var(--shadow-sm);
+}
+
+.product__buy-wrap .btn--buy-now:hover:not([disabled]) {
+  background-color: var(--buy-now-bg-hover, var(--color-primary-dark));
+  color: var(--buy-now-text, #fff);
+  transform: translateY(-2px);
+}
+
+.product__buy-wrap .btn--buy-now[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+/* Full width: the quantity stepper keeps its row and the button drops below
+   it, rather than the two sharing a line. */
+.product__buy-wrap--full .product__buy {
+  flex-wrap: wrap;
+}
+
+.product__buy-wrap--full .product__buy .qty {
+  flex: 0 0 auto;
+}
+
+.product__buy-wrap--full .product__buy .btn--add {
+  flex: 1 0 100%;
+}

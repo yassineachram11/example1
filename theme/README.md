@@ -269,3 +269,46 @@ Verified in a browser against a mock of the real gallery markup plus the thumbna
 copied from `theme.js`: click swaps the image and moves the active thumb, the form's
 variant id follows, a variant without an image leaves the gallery alone, and a preselected
 multi-pack renders its image on load.
+
+---
+
+# Buy button settings
+
+`sections/main-product.liquid` (buy_buttons block) + `assets/buy-buttons.css` +
+`assets/buy-now.js`. **Pushed to staging.** Every setting is inert at its default, so an
+untouched block renders exactly as before.
+
+## Under Product information → Buy buttons
+
+**Labels** — Add to cart and Sold out. Leave empty to keep the theme's wording.
+
+**Buy now** — an optional second button that adds to the cart and goes straight to
+checkout, with its own label.
+
+**Appearance** — size (large or regular), full width, corner radius 0–40px, and four
+colours: Add to cart background/text and Buy now background/text. Leave a colour empty
+and it falls back to the theme's. Hover shades are derived by darkening the chosen colour
+8%, so there is nothing extra to pick.
+
+## Why there is a custom Buy now button
+
+Shopify's dynamic checkout button (`payment_button` — Shop Pay, PayPal and the rest) has
+its wording and colour controlled by Shopify. It cannot be relabelled or recoloured from
+the theme. The Buy now button here is a normal button that posts to `cart/add.js` and then
+redirects to checkout, so it takes your colours and your words. Both can be on at once.
+
+## Full width
+
+The quantity stepper keeps its own row and the button drops below it, rather than the two
+sharing a line.
+
+## Verified
+
+Rendered the block through a Liquid engine across six setting combinations — defaults,
+custom labels, buy now on, brand colours, full width at regular size, and sold out —
+checking the HTML nests and the right CSS variables are emitted. Checked in a browser
+that the overrides beat `.btn--primary` on specificity, including on hover.
+
+One note: the uploaded file carries a real em dash in one schema `info` string where the
+local copy had a `—` escape. Both are valid JSON and identical in the editor; the
+repo copy was synced to match the theme.
