@@ -1,0 +1,197 @@
+{%- liquid
+  assign cols_class = ''
+  if section.settings.columns == '2'
+    assign cols_class = ' specs--two-col'
+  endif
+-%}
+
+{{ 'specs-table.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="section specs{{ cols_class }}"
+  style="
+    background: {{ section.settings.background }};
+    --specs-width: {{ section.settings.max_width }}px;
+    --specs-label: {{ section.settings.label_width }}fr;
+  "
+>
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      <div class="specs__header reveal reveal--up">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2>{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <dl class="specs__list reveal reveal--up">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+          {%- when 'group' -%}
+            {%- if block.settings.title != blank -%}
+              <div class="specs__group" {{ block.shopify_attributes }}>
+                <span>{{ block.settings.title }}</span>
+              </div>
+            {%- endif -%}
+
+          {%- when 'row' -%}
+            {%- if block.settings.label != blank or block.settings.value != blank -%}
+              <div class="specs__row" {{ block.shopify_attributes }}>
+                <dt class="specs__label">{{ block.settings.label }}</dt>
+                <dd class="specs__value">
+                  {{ block.settings.value }}
+                  {%- if block.settings.note != blank -%}
+                    <span class="specs__note">{{ block.settings.note }}</span>
+                  {%- endif -%}
+                </dd>
+              </div>
+            {%- endif -%}
+
+        {%- endcase -%}
+      {%- endfor -%}
+    </dl>
+
+    {%- if section.settings.footnote != blank -%}
+      <p class="specs__footnote reveal reveal--up">{{ section.settings.footnote }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Specs table",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The details"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Specifications"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "info": "Optional line under the heading."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "1", "label": "One column" },
+        { "value": "2", "label": "Two columns" }
+      ],
+      "default": "1",
+      "info": "Two columns suits long lists. Below 750px it is always one column."
+    },
+    {
+      "type": "range",
+      "id": "label_width",
+      "label": "Label column width",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "info": "Relative to the value column, which is fixed at 6."
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 600,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 860
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Footnote",
+      "info": "Small print under the table, for tolerances or measuring notes."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Spec row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Label"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "Value"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note",
+          "info": "Optional, shown smaller under the value."
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "Group heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Group"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Specs table",
+      "blocks": [
+        { "type": "group", "settings": { "title": "Construction" } },
+        { "type": "row", "settings": { "label": "Fill", "value": "Adaptive contour memory foam" } },
+        { "type": "row", "settings": { "label": "Cover", "value": "Breathable cooling cover, zips off" } },
+        { "type": "row", "settings": { "label": "Certification", "value": "OEKO-TEX® STANDARD 100" } },
+        { "type": "group", "settings": { "title": "Fit" } },
+        { "type": "row", "settings": { "label": "Sleeping position", "value": "Back and side" } },
+        { "type": "row", "settings": { "label": "Dimensions", "value": "Add your measurement" } },
+        { "type": "row", "settings": { "label": "Loft (height)", "value": "Add your measurement" } },
+        { "type": "row", "settings": { "label": "Weight", "value": "Add your measurement" } },
+        { "type": "group", "settings": { "title": "Care and delivery" } },
+        { "type": "row", "settings": { "label": "Washing", "value": "Cover is machine washable" } },
+        { "type": "row", "settings": { "label": "Delivery", "value": "Free across Lebanon, 1–5 days" } },
+        { "type": "row", "settings": { "label": "Returns", "value": "Unopened and sealed only" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

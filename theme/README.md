@@ -171,3 +171,43 @@ diverged), so this edit does not apply to it. Remove it there in
 
 This only covers the storefront footer. The "Powered by Shopify" on the checkout and on
 the password page comes from Shopify, not the theme, and cannot be removed on the Basic plan.
+
+---
+
+# Specs table
+
+`sections/specs-table.liquid` + `assets/specs-table.css`, in both `live/` and `staging/`.
+**Pushed to staging and added to the product page**, sitting between the comparison slider
+and the reviews. Drag it elsewhere in the editor if you prefer it higher.
+
+Label/value pairs render as a `<dl>` — correct semantics for specs, and it lets the two
+columns align without table markup.
+
+## Blocks
+
+- **Spec row** — label, value, and an optional note shown smaller beneath the value.
+- **Group heading** — breaks the list into titled sections (Construction / Fit / Care).
+
+## Settings
+
+Eyebrow, heading, optional text, **one or two columns** on desktop (always one below 750px),
+label column width, max width, background, and a footnote for tolerances.
+
+## Fill these in before it goes live
+
+Three rows say **"Add your measurement"** — Dimensions, Loft (height), Weight. I did not
+invent numbers for them.
+
+Everything else is taken from claims already on your own site: adaptive contour memory
+foam, the zip-off cooling cover, OEKO-TEX® STANDARD 100, back and side sleeping, free
+Lebanon delivery in 1–5 days, and the unopened-only returns policy from your FAQ. Check each
+one still reflects reality before publishing.
+
+Worth adding once you have them: fill density, cover fabric composition, and country of
+origin. Those three are what people actually compare between pillows.
+
+## Multiple products later
+
+Blocks live on the *template*, so every product using `product.json` shows the same table.
+That is fine with one product. If you add more, move the values to product metafields and
+read them in the section instead.
