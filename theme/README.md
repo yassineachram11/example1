@@ -89,3 +89,54 @@ live until that theme is published.
 - iOS Safari autoplay needs `muted` + `playsinline`; both are on the swapped element.
 - The dark `color_scheme` and the price line are staging-only and still unreviewed —
   publishing staging ships those too.
+
+---
+
+# How to use — 3-step section
+
+New section, added to both `live/` and `staging/` (identical — no divergence here),
+and **pushed to staging**. It appears in the theme editor under **Add section → How to use**,
+preset with three steps already written.
+
+| File | |
+|---|---|
+| `sections/how-to-use.liquid` | Section, schema and the scroll-triggered playback script |
+| `assets/how-to-use.css` | Layout, clip frames, step numbers, mobile swipe mode |
+
+## Per step
+
+Each step block takes a **Clip** (video), an **Image or GIF**, a title and one line of text.
+Clip wins if both are set. Up to 4 steps; 3 is the shape the layout is tuned for.
+
+## Settings
+
+Eyebrow, heading, optional text, **Clip shape** (square by default — all steps share it),
+step numbers on/off, **On mobile** (stacked or swipe), background colour, optional button.
+
+## MP4 beats GIF here
+
+A 3-second GIF at card size runs 2–5 MB. The same loop as muted MP4 is 150–400 KB —
+roughly 10× smaller, and sharper. Use the **Clip** field.
+
+If you do use a GIF, it is served at its original size on purpose: Shopify's image
+resizing can flatten an animation to a single frame. So export it small (≤900px wide)
+and keep it under ~1 MB.
+
+## Making the clips
+
+Film all three the same way — same distance, same light, same shape — or the row looks
+untidy. 3 to 5 seconds each, ending near where it started so the loop is not jarring.
+
+```bash
+# square, silent, web-ready loop
+ffmpeg -i step1.mov -vf "crop=ih:ih,scale=900:900:flags=lanczos" \
+  -an -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p \
+  -movflags +faststart -t 4 step1-open-the-box.mp4
+```
+
+Upload under **Content → Files**, then pick each one in its step.
+
+## Preset copy is a placeholder
+
+"It takes about an hour to expand to full shape" is a guess. Replace it with the real
+expansion time before this goes live — it is the kind of line customers hold you to.
