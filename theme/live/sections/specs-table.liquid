@@ -1,11 +1,42 @@
 {%- liquid
   assign cols_class = ''
-  if section.settings.columns == '2'
+  if section.settings.columns == '2' and section.settings.collapsible != 'group'
     assign cols_class = ' specs--two-col'
   endif
 -%}
 
 {{ 'specs-table.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  The rows, used as-is when nothing is collapsed and inside the single panel
+  when the whole table is behind one toggle.
+{%- endcomment -%}
+{%- capture specs_list -%}
+  <dl class="specs__list">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'group' -%}
+          {%- if block.settings.title != blank -%}
+            <div class="specs__group" {{ block.shopify_attributes }}>
+              <span>{{ block.settings.title }}</span>
+            </div>
+          {%- endif -%}
+        {%- when 'row' -%}
+          {%- if block.settings.label != blank or block.settings.value != blank -%}
+            <div class="specs__row" {{ block.shopify_attributes }}>
+              <dt class="specs__label">{{ block.settings.label }}</dt>
+              <dd class="specs__value">
+                {{ block.settings.value }}
+                {%- if block.settings.note != blank -%}
+                  <span class="specs__note">{{ block.settings.note }}</span>
+                {%- endif -%}
+              </dd>
+            </div>
+          {%- endif -%}
+      {%- endcase -%}
+    {%- endfor -%}
+  </dl>
+{%- endcapture -%}
 
 <section
   class="section specs{{ cols_class }}"
@@ -30,33 +61,124 @@
       </div>
     {%- endif -%}
 
-    <dl class="specs__list reveal reveal--up">
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
+    {%- case section.settings.collapsible -%}
 
-          {%- when 'group' -%}
-            {%- if block.settings.title != blank -%}
-              <div class="specs__group" {{ block.shopify_attributes }}>
-                <span>{{ block.settings.title }}</span>
+      {%- when 'all' -%}
+        {%- comment -%}
+          One toggle over everything. The markup matches the FAQ accordion so
+          the theme's existing [data-toggle] handler drives it.
+        {%- endcomment -%}
+        <div class="accordion specs__accordion reveal reveal--up">
+          <div class="accordion__item">
+            <button
+              type="button"
+              class="accordion__toggle"
+              data-toggle
+              aria-expanded="{% if section.settings.open_first %}true{% else %}false{% endif %}"
+            >
+              {{ section.settings.toggle_label | default: 'Specifications' }}
+              {%- render 'icon', name: 'chevron-down' -%}
+            </button>
+            <div class="accordion__panel">
+              <div>
+                <div class="accordion__panel-inner">{{ specs_list }}</div>
               </div>
+            </div>
+          </div>
+        </div>
+
+      {%- when 'group' -%}
+        {%- comment -%}
+          One panel per group heading. Any rows placed before the first group
+          have no panel to belong to, so they stay visible above the accordion.
+        {%- endcomment -%}
+        {%- assign seen_group = false -%}
+        {%- capture loose_rows -%}
+          {%- for block in section.blocks -%}
+            {%- comment -%}
+              A group with no title renders no panel, so it must not start one
+              here either or the rows after it would vanish.
+            {%- endcomment -%}
+            {%- if block.type == 'group' and block.settings.title != blank -%}
+              {%- assign seen_group = true -%}
+            {%- elsif block.type == 'row' and seen_group == false -%}
+              {%- if block.settings.label != blank or block.settings.value != blank -%}
+                <div class="specs__row" {{ block.shopify_attributes }}>
+                  <dt class="specs__label">{{ block.settings.label }}</dt>
+                  <dd class="specs__value">
+                    {{ block.settings.value }}
+                    {%- if block.settings.note != blank -%}
+                      <span class="specs__note">{{ block.settings.note }}</span>
+                    {%- endif -%}
+                  </dd>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+
+        {%- if loose_rows != blank -%}
+          <dl class="specs__list reveal reveal--up">{{ loose_rows }}</dl>
+        {%- endif -%}
+
+        <div class="accordion specs__accordion reveal reveal--up">
+          {%- assign panel_open = false -%}
+          {%- assign panel_index = 0 -%}
+          {%- for block in section.blocks -%}
+
+            {%- if block.type == 'group' and block.settings.title != blank -%}
+              {%- if panel_open -%}
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+              {%- endif -%}
+              {%- assign panel_index = panel_index | plus: 1 -%}
+            <div class="accordion__item" {{ block.shopify_attributes }}>
+              <button
+                type="button"
+                class="accordion__toggle"
+                data-toggle
+                aria-expanded="{% if panel_index == 1 and section.settings.open_first %}true{% else %}false{% endif %}"
+              >
+                {{ block.settings.title }}
+                {%- render 'icon', name: 'chevron-down' -%}
+              </button>
+              <div class="accordion__panel">
+                <div>
+                  <div class="accordion__panel-inner">
+                    <dl class="specs__list">
+              {%- assign panel_open = true -%}
+
+            {%- elsif block.type == 'row' and panel_open -%}
+              {%- if block.settings.label != blank or block.settings.value != blank -%}
+                      <div class="specs__row" {{ block.shopify_attributes }}>
+                        <dt class="specs__label">{{ block.settings.label }}</dt>
+                        <dd class="specs__value">
+                          {{ block.settings.value }}
+                          {%- if block.settings.note != blank -%}
+                            <span class="specs__note">{{ block.settings.note }}</span>
+                          {%- endif -%}
+                        </dd>
+                      </div>
+              {%- endif -%}
             {%- endif -%}
 
-          {%- when 'row' -%}
-            {%- if block.settings.label != blank or block.settings.value != blank -%}
-              <div class="specs__row" {{ block.shopify_attributes }}>
-                <dt class="specs__label">{{ block.settings.label }}</dt>
-                <dd class="specs__value">
-                  {{ block.settings.value }}
-                  {%- if block.settings.note != blank -%}
-                    <span class="specs__note">{{ block.settings.note }}</span>
-                  {%- endif -%}
-                </dd>
+          {%- endfor -%}
+          {%- if panel_open -%}
+                    </dl>
+                  </div>
+                </div>
               </div>
-            {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
 
-        {%- endcase -%}
-      {%- endfor -%}
-    </dl>
+      {%- else -%}
+        <div class="reveal reveal--up">{{ specs_list }}</div>
+
+    {%- endcase -%}
 
     {%- if section.settings.footnote != blank -%}
       <p class="specs__footnote reveal reveal--up">{{ section.settings.footnote }}</p>
@@ -89,6 +211,35 @@
     },
     {
       "type": "header",
+      "content": "Collapsing"
+    },
+    {
+      "type": "select",
+      "id": "collapsible",
+      "label": "Collapse the table",
+      "options": [
+        { "value": "group", "label": "One panel per group" },
+        { "value": "all", "label": "Whole table behind one toggle" },
+        { "value": "off", "label": "Always open" }
+      ],
+      "default": "group",
+      "info": "Collapsed panels open when the visitor presses the heading."
+    },
+    {
+      "type": "text",
+      "id": "toggle_label",
+      "label": "Toggle label",
+      "default": "Specifications",
+      "info": "Only used when the whole table sits behind one toggle."
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open the first panel by default",
+      "default": false
+    },
+    {
+      "type": "header",
       "content": "Layout"
     },
     {
@@ -100,7 +251,7 @@
         { "value": "2", "label": "Two columns" }
       ],
       "default": "1",
-      "info": "Two columns suits long lists. Below 750px it is always one column."
+      "info": "Two columns suits long lists. Ignored when collapsing by group, and below 750px it is always one column."
     },
     {
       "type": "range",

@@ -98,3 +98,30 @@
 
   .specs__value { font-size: var(--text-sm); }
 }
+
+/* --------------------------------------------------------------------------
+   Collapsed panels
+   Reuses the theme's .accordion, whose panel styling is tuned for FAQ answers
+   (muted, small). Specs need their own type scale back.
+   -------------------------------------------------------------------------- */
+.specs__accordion {
+  max-width: var(--specs-width, 860px);
+  margin-inline: auto;
+}
+
+.specs .accordion__toggle {
+  font-size: var(--text-lg);
+}
+
+.specs .accordion__panel-inner {
+  color: inherit;
+  font-size: inherit;
+  padding-bottom: var(--space-md);
+}
+
+.specs .accordion__panel-inner .specs__list { max-width: none; }
+
+.specs .accordion__panel-inner .specs__row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}

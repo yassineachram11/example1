@@ -188,10 +188,30 @@ columns align without table markup.
 - **Spec row** — label, value, and an optional note shown smaller beneath the value.
 - **Group heading** — breaks the list into titled sections (Construction / Fit / Care).
 
+## Collapsing
+
+**Collapse the table** has three modes:
+
+- **One panel per group** (default) — each group heading becomes a toggle. Closed until
+  pressed.
+- **Whole table behind one toggle** — a single row labelled by **Toggle label**.
+- **Always open** — the plain table.
+
+**Open the first panel by default** is off, so nothing is expanded on load.
+
+The markup reuses the theme's own `.accordion` from the FAQ section, which means the
+existing delegated `[data-toggle]` handler in `theme.js` drives it — no new JavaScript, the
+same chevron and animation, and it keeps working after a theme-editor section reload.
+The rows stay in the HTML when collapsed, so search engines still read them.
+
+Rows placed *before* the first group heading have no panel to belong to, so they render
+above the accordion and stay visible.
+
 ## Settings
 
-Eyebrow, heading, optional text, **one or two columns** on desktop (always one below 750px),
-label column width, max width, background, and a footnote for tolerances.
+Eyebrow, heading, optional text, **one or two columns** on desktop (ignored when collapsing
+by group; always one below 750px), label column width, max width, background, and a
+footnote for tolerances.
 
 ## Fill these in before it goes live
 
