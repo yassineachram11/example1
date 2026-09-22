@@ -140,3 +140,21 @@ Upload under **Content → Files**, then pick each one in its step.
 
 "It takes about an hour to expand to full shape" is a guess. Replace it with the real
 expansion time before this goes live — it is the kind of line customers hold you to.
+
+---
+
+# Footer payment icons
+
+Not a code change — `sections/footer.liquid` already exposes **Show payment icons**
+(and optional *Payment badge* blocks for gateways like Whish that Shopify's
+`shop.enabled_payment_types` never lists).
+
+Turned **off** on staging by setting `show_payment_icons: false` in
+`sections/footer-group.json`. No payment badge blocks were configured, so the row
+is now gone entirely.
+
+To do the same on the published theme: **Customize → Footer → uncheck Show payment
+icons**. It cannot be pushed through the API — writes to the live theme are blocked.
+
+Note: with no payment providers enabled, the section falls back to placeholder
+VISA / MC / AMEX / PAYPAL / APPLE / GPAY pills, which is probably what was showing.
