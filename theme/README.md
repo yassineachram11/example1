@@ -312,3 +312,63 @@ that the overrides beat `.btn--primary` on specificity, including on hover.
 One note: the uploaded file carries a real em dash in one schema `info` string where the
 local copy had a `—` escape. Both are valid JSON and identical in the editor; the
 repo copy was synced to match the theme.
+
+---
+
+# Product gallery thumbnails on mobile
+
+One file, `assets/product-page.css`, identical on both themes before the change
+(`15831416d75b8e72049d5595b0213a00`, 11,905 bytes) and so identical after it
+(`667548ed263e3c0f417ab61d660fbf7d`, 12,289 bytes).
+
+| Theme | State |
+|---|---|
+| `azure-theme (staging)` (`210249285981`) | **Pushed and verified** — returned checksum matches the local file byte for byte. |
+| `azure-theme` (`210145935709`, published) | Not applied. The API refuses writes to the live theme; paste it in by hand (below). |
+
+## The change
+
+`base.css` sizes the thumbnail strip with `minmax(78px, 1fr)` at every width. That is
+fine on desktop and much too big on a phone — on a 360px screen it fits only three
+per row, so seven images become three rows and 337px of strip above the fold. The
+override drops the minimum to 58px below 750px and tightens the gap to 6px.
+
+Measured in Chromium against the real `base.css` and the seven media items on Pilo 1.0:
+
+| Viewport | Before | After |
+|---|---|---|
+| 360px | 101px, 3/row, 3 rows, 337px tall | **59px, 5/row, 2 rows, 136px** |
+| 390px | 82px, 4/row, 2 rows, 182px | **65px, 5/row, 2 rows, 148px** |
+| 430px | 92px, 4/row, 2 rows, 202px | **60px, 6/row, 2 rows, 137px** |
+| 900px | 97px, 4/row | unchanged — 97px, 4/row |
+
+Nothing changes at 750px and above. The smallest result is 59px, comfortably over the
+44px minimum touch target, so the thumbnails stay easy to tap.
+
+## Applying it to the live theme
+
+**Online Store → Themes → azure-theme → ⋯ → Edit code → `assets/product-page.css`**,
+then paste this directly after the `.product__thumb.is-active { … }` rule:
+
+```css
+/* Phones and small tablets: the 78px minimum from base.css leaves the strip
+   eating most of the fold on a 360px screen. A smaller minimum fits five or six
+   per row instead of three or four, and still clears the 44px touch target. */
+@media screen and (max-width: 749px) {
+  .product__thumbs {
+    grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+    gap: 6px;
+  }
+}
+```
+
+That is the whole change — it is purely additive, so removing the block restores the
+original file exactly.
+
+## Want them a different size
+
+Change the one number. `58px` is the *minimum* track width, not the final size: the grid
+fits as many tracks of at least that width as it can and then shares out the remainder,
+so the rendered thumbnail always lands somewhere between the minimum and roughly 1.5× it.
+Lower it for smaller thumbnails and more per row (`48px` gives seven per row on a 390px
+screen, one tidy row for all seven images); raise it back toward `78px` for the old size.
