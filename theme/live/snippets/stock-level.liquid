@@ -1,0 +1,72 @@
+{%- comment -%}
+  Stock level indicator, shown above the quantity selector.
+
+  Renders the line for the variant on screen and, alongside it, a small JSON map
+  of every variant so stock-level.js can swap the text when the shopper changes
+  pack without a page load. The state logic lives here only — the JS just looks
+  up a pre-rendered string.
+
+  Accepts:
+    product          - the product
+    variant          - the variant currently selected
+    threshold        - show "low" at or below this many units
+    in_label         - text when comfortably in stock
+    low_label        - text when low; [count] is replaced by the number left
+    out_label        - text when unavailable
+    backorder_label  - text when out of stock but still sellable
+{%- endcomment -%}
+
+{%- liquid
+  assign current_state = ''
+  assign current_text = ''
+-%}
+
+{%- capture stock_json -%}
+{
+{%- for v in product.variants -%}
+  {%- liquid
+    assign count = v.inventory_quantity
+
+    comment
+      Untracked inventory has no number to show, so it can only ever report
+      the in-stock wording, which is what Shopify itself assumes when it
+      lets the variant be bought.
+    endcomment
+    if v.available == false
+      assign state = 'out'
+      assign text = out_label
+    elsif v.inventory_management == blank
+      assign state = 'in'
+      assign text = in_label
+    elsif count > 0 and count <= threshold
+      assign state = 'low'
+      assign text = low_label | replace: '[count]', count
+    elsif count > 0
+      assign state = 'in'
+      assign text = in_label
+    else
+      comment
+        Available, tracked, and nothing on the shelf: the variant is set to
+        keep selling when sold out.
+      endcomment
+      assign state = 'backorder'
+      assign text = backorder_label
+    endif
+
+    if v.id == variant.id
+      assign current_state = state
+      assign current_text = text
+    endif
+  -%}
+  "{{ v.id }}": { "state": {{ state | json }}, "text": {{ text | json }} }{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+}
+{%- endcapture -%}
+
+{%- if current_text != blank -%}
+  <p class="stock stock--{{ current_state }}" data-stock-level>
+    <span class="stock__dot" aria-hidden="true"></span>
+    <span class="stock__text" data-stock-text>{{ current_text }}</span>
+  </p>
+  <script type="application/json" data-stock-json>{{ stock_json }}</script>
+{%- endif -%}

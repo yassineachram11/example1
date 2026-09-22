@@ -295,6 +295,9 @@
               {%- if block.settings.show_buy_now -%}
                 <script src="{{ 'buy-now.js' | asset_url }}" defer="defer"></script>
               {%- endif -%}
+              {%- if block.settings.show_stock -%}
+                <script src="{{ 'stock-level.js' | asset_url }}" defer="defer"></script>
+              {%- endif -%}
 
               <div
                 class="{{ buy_class }}"
@@ -315,6 +318,17 @@
               >
                 {%- form 'product', product, data-product-form: true -%}
                   <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+                  {%- if block.settings.show_stock -%}
+                    {%- render 'stock-level',
+                          product: product,
+                          variant: current_variant,
+                          threshold: block.settings.stock_threshold,
+                          in_label: block.settings.stock_in_label,
+                          low_label: block.settings.stock_low_label,
+                          out_label: block.settings.stock_out_label,
+                          backorder_label: block.settings.stock_backorder_label -%}
+                  {%- endif -%}
 
                   <div class="product__buy">
                     {%- if block.settings.show_quantity -%}
@@ -601,6 +615,40 @@
       "limit": 1,
       "settings": [
         { "type": "checkbox", "id": "show_quantity", "label": "Show quantity selector", "default": true },
+        { "type": "header", "content": "Stock level" },
+        {
+          "type": "checkbox",
+          "id": "show_stock",
+          "label": "Show a stock line above the quantity selector",
+          "default": true,
+          "info": "Only ever says what Shopify already knows. Variants with inventory tracking turned off can only show the in-stock wording."
+        },
+        {
+          "type": "range",
+          "id": "stock_threshold",
+          "label": "Call it low stock at or below",
+          "min": 1,
+          "max": 50,
+          "step": 1,
+          "unit": "pcs",
+          "default": 10
+        },
+        { "type": "text", "id": "stock_in_label", "label": "In stock wording", "default": "In stock, ready to ship" },
+        {
+          "type": "text",
+          "id": "stock_low_label",
+          "label": "Low stock wording",
+          "default": "Only [count] left",
+          "info": "[count] is replaced by the number remaining. Leave it out to keep the number private."
+        },
+        { "type": "text", "id": "stock_out_label", "label": "Out of stock wording", "default": "Out of stock" },
+        {
+          "type": "text",
+          "id": "stock_backorder_label",
+          "label": "Backorder wording",
+          "default": "Available on backorder",
+          "info": "Used when a variant is sold out but set to keep selling."
+        },
         { "type": "header", "content": "Labels" },
         {
           "type": "text",

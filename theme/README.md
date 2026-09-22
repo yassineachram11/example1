@@ -372,3 +372,90 @@ fits as many tracks of at least that width as it can and then shares out the rem
 so the rendered thumbnail always lands somewhere between the minimum and roughly 1.5× it.
 Lower it for smaller thumbnails and more per row (`48px` gives seven per row on a 390px
 screen, one tidy row for all seven images); raise it back toward `78px` for the old size.
+
+---
+
+# Stock level indicator
+
+A line above the quantity selector saying whether the selected pack is in stock,
+low, on backorder or gone. Four files:
+
+| File | |
+|---|---|
+| `snippets/stock-level.liquid` | new — works out the state and the wording |
+| `assets/stock-level.js` | new — swaps the line when the pack changes |
+| `assets/buy-buttons.css` | the `.stock` styles appended |
+| `sections/main-product.liquid` | renders it, plus six new block settings |
+
+| Theme | State |
+|---|---|
+| `azure-theme (staging)` (`210249285981`) | **Pushed and verified** — all four returned checksums match the local files byte for byte. |
+| `azure-theme` (`210145935709`, published) | Not applied. The API refuses writes to the live theme. |
+
+## What it decides
+
+Everything comes from what Shopify already knows about the variant. Nothing is
+invented and no number is made up:
+
+| Variant | Line | Colour |
+|---|---|---|
+| Not available | Out of stock | red |
+| Inventory tracking off | In stock, ready to ship | green |
+| Tracked, above the threshold | In stock, ready to ship | green |
+| Tracked, at or below the threshold | Only 4 left | amber |
+| Tracked, none left, still sellable | Available on backorder | grey |
+
+Threshold defaults to 10. **Pilo 1.0 holds 100 singles and 50 two-packs today, so
+both packs will read "In stock, ready to ship"** — the low-stock line will not
+appear until a pack actually drops to 10 or fewer.
+
+## Settings — Product information → Buy buttons → Stock level
+
+| Setting | Default |
+|---|---|
+| Show a stock line above the quantity selector | on |
+| Call it low stock at or below | 10 pcs |
+| In stock wording | In stock, ready to ship |
+| Low stock wording | Only [count] left |
+| Out of stock wording | Out of stock |
+| Backorder wording | Available on backorder |
+
+`[count]` in the low-stock wording is replaced by the number remaining. **Take it
+out and no number is shown** — write something like "Low stock — order soon" if you
+would rather not publish your inventory. Worth knowing either way: a number on the
+page is a number your competitors can read.
+
+## How it keeps up with the pack selector
+
+`stock-level.liquid` renders a small JSON map of every variant next to the line, so
+all the state logic stays in Liquid and the JS only looks a string up. It listens on
+the document for changes inside `[data-bundle-picker]` or `[data-variant-picker]` and
+defers a tick, so it reads the hidden variant input after `bundle.js` or `theme.js`
+has written it. Neither of those files was touched.
+
+An unknown variant id hides the line rather than leaving the previous pack's wording
+standing.
+
+## Checked before pushing
+
+- Every state rendered offline through python-liquid — in stock, low, exactly at the
+  threshold, sold out, backorder, untracked inventory and a negative quantity — and
+  each generated JSON map parsed.
+- The pack-switching behaviour driven in Chromium against the real `bundle.js`,
+  including the sold-out row and an unknown variant id. No console errors.
+- The `{% schema %}` JSON parsed and checked for duplicate setting ids.
+- Undoing all three edits to `main-product.liquid` reproduces the theme's own file
+  byte for byte (`4a8c7852…`).
+
+## Applying it to the live theme
+
+The live theme is still on the **pre-buy-buttons** `main-product.liquid` (25,634
+bytes), so `theme/live/sections/main-product.liquid` carries both the earlier buy
+button work and this. Applying it ships both at once. The other three files are
+new or additive and can go over as they are.
+
+## One caveat
+
+Stock is read when the page is rendered. If Shopify serves a cached page the number
+can lag reality by a little, so treat "Only 4 left" as nearly-live rather than
+to-the-second.
