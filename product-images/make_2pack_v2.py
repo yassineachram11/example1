@@ -34,6 +34,26 @@ BBOX = cut_mask.getbbox()
 cut = src.copy(); cut.putalpha(cut_mask); cut = cut.crop(BBOX)
 
 
+def perspective(img, tilt=0.10, squeeze=0.06):
+    """Re-photograph the cut from a slightly different viewpoint.
+
+    A straight copy reads as a clone: same creases, same highlights, same
+    camera. Narrowing the top edge and shortening the near edge approximates
+    looking at the pillow from further back and a little higher.
+    """
+    w, h = img.size
+    src_pts = [(0, 0), (w, 0), (w, h), (0, h)]
+    dst_pts = [(w * squeeze, 0), (w * (1 - squeeze), 0),
+               (w * (1 + tilt * 0.15), h * (1 - tilt)), (-w * tilt * 0.15, h * (1 - tilt))]
+    # solve for the 8 transform coefficients (destination -> source)
+    A, B = [], []
+    for (sx, sy), (dx, dy) in zip(src_pts, dst_pts):
+        A.append([dx, dy, 1, 0, 0, 0, -sx * dx, -sx * dy]); B.append(sx)
+        A.append([0, 0, 0, dx, dy, 1, -sy * dx, -sy * dy]); B.append(sy)
+    coeffs = np.linalg.solve(np.array(A, dtype=float), np.array(B, dtype=float))
+    return img.transform((w, h), Image.PERSPECTIVE, coeffs, Image.BICUBIC)
+
+
 def add(canvas, pillow, scale, x, y, shadow=0.42, blur=26, dim=1.0, dx=20, dy=28):
     """Drop a pillow at (x, y) with a soft contact shadow underneath it."""
     p = pillow.resize((int(pillow.width * scale), int(pillow.height * scale)), Image.LANCZOS)
@@ -57,6 +77,15 @@ if MODE == 'behind':
     out = add(src.copy(), cut, 0.74, 268, 318, shadow=0.38, blur=30, dim=0.94)
     out.paste(cut, (BBOX[0], BBOX[1]), cut)          # original back on top
     name = 'pilo-2pack-behind'
+
+elif MODE == 'angled':
+    # Mirrored and re-projected so the second pillow is not a pixel copy.
+    from PIL import ImageOps
+    other = perspective(ImageOps.mirror(cut), tilt=0.13, squeeze=0.07).rotate(
+        -2.5, resample=Image.BICUBIC, expand=True)
+    out = add(src.copy(), other, 0.78, 250, 300, shadow=0.36, blur=32, dim=0.91)
+    out.paste(cut, (BBOX[0], BBOX[1]), cut)
+    name = 'pilo-2pack-angled'
 
 elif MODE == 'stacked':
     # One resting on the other, offset so both silhouettes read.
