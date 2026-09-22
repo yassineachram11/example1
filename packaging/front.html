@@ -1,0 +1,56 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+@page { size: 460mm 620mm; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #fff; }
+body { font-family: "Liberation Sans", Helvetica, Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.sheet {
+  position: relative; overflow: hidden;
+  width: 460mm; height: 620mm;
+  background: #FBFAF7; color: #101F35;
+}
+.sheet.reverse { background: #101F35; color: #FBFAF7; }
+.art { position: absolute; left: 5mm; top: 5mm; width: 450mm; height: 610mm; }
+.flap { position: absolute; left: 0; top: 0; width: 100%; height: 60mm; }
+.panel { position: absolute; left: 0; top: 60mm; width: 100%; height: 550mm; padding: 20mm; }
+
+.wordmark { font-size: 96mm; font-weight: 700; letter-spacing: 14mm; text-indent: 14mm; line-height: 1; }
+.rule { height: 1.2mm; background: currentColor; }
+.tag { font-size: 11mm; letter-spacing: 3.4mm; text-transform: uppercase; }
+.url { font-size: 9mm; letter-spacing: 2.4mm; text-transform: uppercase; opacity: .75; }
+
+.front-mid { position: absolute; left: 20mm; right: 20mm; top: 46%; transform: translateY(-50%); text-align: center; }
+.front-foot { position: absolute; left: 0; right: 0; bottom: 20mm; text-align: center; }
+
+.mark { font-size: 15mm; font-weight: 700; letter-spacing: 3mm; }
+.label-zone { margin: 10mm 0 0; height: 115mm; }
+.zone-hint { display: none; }
+
+.steps-head { font-size: 8.4mm; letter-spacing: 2.6mm; text-transform: uppercase; opacity: .7; margin-bottom: 7mm; }
+.steps { display: flex; gap: 9mm; }
+.step { flex: 1; }
+.step-ico { width: 34mm; height: 34mm; margin-bottom: 6mm; }
+.step-ico svg { width: 100%; height: 100%; }
+.step-n { font-size: 7mm; font-weight: 700; letter-spacing: 1mm; opacity: .55; margin-bottom: 1.5mm; }
+.step-t { font-size: 13mm; font-weight: 700; margin-bottom: 3mm; }
+.step-x { font-size: 9mm; line-height: 1.35; opacity: .8; }
+
+.panel.back { display: flex; flex-direction: column; justify-content: space-between; }
+.back-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 10mm; }
+.qr { width: 40mm; }
+.qr svg { width: 40mm; height: 40mm; display: block; }
+.qr-cap { font-size: 6.4mm; line-height: 1.3; margin-top: 3mm; opacity: .8; }
+.contact { text-align: right; font-size: 8.4mm; line-height: 1.5; }
+.contact strong { font-size: 10mm; }
+.recycle { display: flex; align-items: center; gap: 3mm; justify-content: flex-end; margin-top: 4mm; font-size: 6.4mm; letter-spacing: .6mm; opacity: .8; }
+.recycle svg { width: 9mm; height: 9mm; }
+</style></head>
+<body><div class="sheet"><div class="art">
+        <div class="flap"></div>
+        <div class="panel">
+          <div class="front-mid">
+            <div class="wordmark">PILO</div>
+            <div class="rule" style="margin: 9mm auto 8mm; width: 62%;"></div>
+            <div class="tag">Sleep that repairs you</div>
+          </div>
+          <div class="front-foot"><div class="url">piloshop.com</div></div>
+        </div></div></div></body></html>
