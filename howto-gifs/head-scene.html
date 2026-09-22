@@ -1,0 +1,101 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+  body { margin:0; background:#fff; }
+  .stage { width:600px; height:600px; background:#F8FAFC; }
+  svg { display:block; width:600px; height:600px; }
+</style></head><body>
+<div class="stage"><svg id="svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<script>
+const INK = '#101F35', ACCENT = '#2563EB', SOFT = '#DCE6F4', BG = '#F8FAFC';
+const SW = 9;
+
+const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+const seg = (t,a,b) => clamp((t-a)/(b-a), 0, 1);
+const easeOut = t => 1 - Math.pow(1-t, 3);
+const lerp = (a,b,t) => a + (b-a)*t;
+
+// The head swings about the base of the neck, the way you lower your head onto
+// a pillow: the shoulders stay where they are, everything above them comes down.
+const PX = 348, PY = 437;
+
+function rotator(ang) {
+  const r = ang * Math.PI/180, c = Math.cos(r), s = Math.sin(r);
+  return (x, y) => {
+    const dx = x - PX, dy = y - PY;
+    return [PX + dx*c - dy*s, PY + dx*s + dy*c];
+  };
+}
+const fmt = p => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
+
+// Head, neck, shoulder and chest as one closed outline, so the neck can flex
+// without ever showing a seam where it joins the body. Points written H() swing
+// with the head; points written B() are bolted to the mattress.
+function figure(ang) {
+  const R = rotator(ang);
+  const H = (x,y) => fmt(R(x,y));
+  const B = (x,y) => `${x} ${y}`;
+  return `M ${H(262,278)}
+          C ${H(216,278)}, ${H(182,304)}, ${H(180,340)}
+          L ${H(170,356)}
+          L ${H(188,362)}
+          C ${H(184,370)}, ${H(186,376)}, ${H(192,382)}
+          C ${H(200,394)}, ${H(212,400)}, ${H(230,404)}
+          C ${H(258,416)}, ${H(284,422)}, ${H(306,424)}
+          C ${H(318,430)}, ${H(324,438)}, ${B(330,450)}
+          C ${B(382,462)}, ${B(460,466)}, ${B(520,466)}
+          L ${B(600,466)}
+          L ${B(600,372)}
+          C ${B(540,360)}, ${B(486,352)}, ${B(452,360)}
+          C ${B(416,372)}, ${B(390,396)}, ${B(366,424)}
+          C ${H(350,416)}, ${H(332,408)}, ${H(320,394)}
+          C ${H(304,382)}, ${H(294,364)}, ${H(296,340)}
+          C ${H(300,302)}, ${H(306,278)}, ${H(262,278)} Z`;
+}
+
+// Pillow profile: a dip that cradles the skull, a raised roll under the neck.
+function pillow(squash) {
+  const dip = 424 + squash*16, roll = 412 + squash*7, lip = 414 + squash*5;
+  return `M 108 478
+          L 108 440
+          C 126 ${lip+4}, 148 ${lip-2}, 176 ${dip-4}
+          C 206 ${dip+4}, 250 ${dip+6}, 292 ${dip}
+          C 308 ${roll+8}, 320 ${roll+1}, 338 ${roll}
+          C 368 ${roll}, 400 ${roll+18}, 418 446
+          L 418 478 Z`;
+}
+
+function scene(t) {
+  // Down, then one small settle as the foam takes the weight.
+  const fall = easeOut(seg(t, .02, .52));
+  const settle = Math.sin(seg(t, .52, .80) * Math.PI) * 2.0;
+  const ang = lerp(24, 0, fall) + settle;
+  const squash = easeOut(seg(t, .34, .68));
+  const guide = seg(t, .70, .88);
+
+  const R = rotator(ang);
+  const ear = R(256, 354);
+
+  return `<g fill="none" stroke="${INK}" stroke-width="${SW}"
+             stroke-linecap="round" stroke-linejoin="round">
+    <rect x="30" y="478" width="540" height="52" rx="18" fill="${SOFT}" stroke="none"/>
+    <path d="M 30 478 H 570" stroke="${SOFT}" stroke-width="7"/>
+
+    <path d="${pillow(squash)}" fill="${SOFT}"/>
+    <path d="${figure(ang)}" fill="${BG}"/>
+
+    <path d="M ${fmt(R(246,342))} A 16 16 0 1 1 ${fmt(R(268,368))}"
+          stroke="${SOFT}" stroke-width="7"/>
+    <path d="M 468 416 C 516 410, 558 414, 600 426" stroke="${SOFT}" stroke-width="7"/>
+
+    <g opacity="${guide.toFixed(2)}">
+      <path d="M ${fmt(ear)} L 502 ${ear[1].toFixed(1)}"
+            stroke="${ACCENT}" stroke-width="5" stroke-dasharray="15 13"/>
+      <circle cx="${ear[0].toFixed(1)}" cy="${ear[1].toFixed(1)}" r="8"
+              fill="${ACCENT}" stroke="none"/>
+      <circle cx="470" cy="${ear[1].toFixed(1)}" r="8" fill="${ACCENT}" stroke="none"/>
+    </g>
+  </g>`;
+}
+
+window.render = t => { document.getElementById('svg').innerHTML = scene(t); };
+window.render(0);
+</script></body></html>

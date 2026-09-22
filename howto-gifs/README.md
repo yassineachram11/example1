@@ -57,3 +57,26 @@ mobile settings were all left exactly as they were set in the theme editor.
 
 Replacing them later with real footage does not need a code change: upload the new clips
 under Content → Files and repoint each step's **Clip** field.
+
+## Placing your head on the Pilo
+
+`head-on-pilo.gif` (200 KB) / `head-on-pilo.mp4` (21 KB) — 600 × 600, ~3 seconds.
+
+A side profile lowers onto the pillow: the head swings down about the base of the neck,
+the foam compresses under the skull, and a blue dashed line fades in at the end showing the
+ear sitting level with the shoulder — the cervical-alignment claim, drawn rather than
+asserted. It plays once, holds on the aligned pose for about a second, then cuts back.
+
+This is an illustration, not footage. There is no person and no real Pilo in it — it is
+deliberately abstract for the same reason as the three step animations above. It works as a
+supporting graphic next to the specs table or the comparison slider; a real clip of someone
+lying down will always convert better.
+
+```bash
+python3 capture-head.py     # 36 frames from head-scene.html
+python3 assemble-head.py    # writes head-on-pilo.gif and .mp4
+```
+
+`head-scene.html` is pure geometry driven by `window.render(t)`, `t` running 0 → 1. The
+figure is one closed outline — points marked `H()` swing with the head, points marked `B()`
+stay on the mattress — so the neck flexes without ever showing a seam at the shoulder.
