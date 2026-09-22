@@ -39,3 +39,21 @@ python3 assemble.py   # writes the GIFs and MP4s
 ```
 
 Needs `pillow` and `imageio-ffmpeg` (`pip install pillow imageio-ffmpeg`).
+
+## Uploaded to staging
+
+The three MP4s are live in the staging theme (`210249285981`):
+
+| Shopify Files | Attached to |
+|---|---|
+| `pilo-howto-step-1-open-the-box.mp4` | step block `step_9W6FQE` — "Open the box" |
+| `pilo-howto-step-2-unwrap-it.mp4` | step block `step_fXi9FC` — "Unwrap the pillow" |
+| `pilo-howto-step-3-sleep-on-it.mp4` | step block `step_ChqiE6` — "Sleep on it" |
+
+Uploaded via `stagedUploadsCreate` → direct POST → `fileCreate`; all three transcoded to
+480 × 480 and report `READY`. Only the three `video` keys were added to
+`templates/index.json` — the section placement, swipe mode, white background and the hero's
+mobile settings were all left exactly as they were set in the theme editor.
+
+Replacing them later with real footage does not need a code change: upload the new clips
+under Content → Files and repoint each step's **Clip** field.
