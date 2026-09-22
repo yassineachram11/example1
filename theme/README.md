@@ -158,3 +158,16 @@ icons**. It cannot be pushed through the API — writes to the live theme are bl
 
 Note: with no payment providers enabled, the section falls back to placeholder
 VISA / MC / AMEX / PAYPAL / APPLE / GPAY pills, which is probably what was showing.
+
+## "Powered by Shopify"
+
+Removed from `staging/sections/footer.liquid` — the `{{ powered_by_link }}` line in the
+copyright row is gone; the copyright and policy links are untouched. Verified by putting
+the line back and matching the theme's original MD5, so nothing else in the file changed.
+
+The live theme has a **different** footer (13,783 bytes vs staging's 16,899 — they have
+diverged), so this edit does not apply to it. Remove it there in
+**Edit code → sections/footer.liquid**, deleting the `{{ powered_by_link }}` line.
+
+This only covers the storefront footer. The "Powered by Shopify" on the checkout and on
+the password page comes from Shopify, not the theme, and cannot be removed on the Basic plan.
