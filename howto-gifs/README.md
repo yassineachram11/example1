@@ -1,0 +1,41 @@
+# How to use — step animations
+
+Three looping animations for the **How to use** section, drawn in the site's own line-art
+style (navy `#101F35` on `#F8FAFC`, matching the section's card background).
+
+| Step | GIF | MP4 |
+|---|---|---|
+| 1. Open the box | `step-1-open-the-box.gif` (150 KB) | `step-1-open-the-box.mp4` (18 KB) |
+| 2. Unwrap it | `step-2-unwrap-it.gif` (116 KB) | `step-2-unwrap-it.mp4` (19 KB) |
+| 3. Sleep on it | `step-3-sleep-on-it.gif` (183 KB) | `step-3-sleep-on-it.mp4` (21 KB) |
+
+600 × 600 (square, the section's default clip shape), ~3 seconds, looping.
+
+## Use the MP4s
+
+Upload the MP4s under **Content → Files**, then pick each one in its step's **Clip** field.
+They are roughly 8× smaller than the GIFs and sharper, and the section only starts playing
+them once the step scrolls into view. The GIFs are there if you want them for email,
+Instagram or anywhere that will not take a video.
+
+## These are illustrations, not your product
+
+They show a generic carton, roll and pillow — deliberately abstract, so nothing claims to be
+footage of the real Pilo. They are a good placeholder and they read clearly at card size, but
+real clips of the actual product will always convert better. Replace them when you can film
+(the section's README has an ffmpeg recipe for square exports).
+
+Step 3 loops seamlessly. Steps 1 and 2 play once, hold on the finished state, then cut back —
+normal for a how-to loop.
+
+## Editing
+
+`scenes.html` holds all three as pure geometry driven by `window.render(scene, t)` where
+`t` runs 0 → 1. Change colours or timing there, then:
+
+```bash
+python3 capture.py    # renders 36 frames per scene
+python3 assemble.py   # writes the GIFs and MP4s
+```
+
+Needs `pillow` and `imageio-ffmpeg` (`pip install pillow imageio-ffmpeg`).

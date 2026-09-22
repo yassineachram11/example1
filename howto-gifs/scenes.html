@@ -1,0 +1,98 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+  body { margin:0; background:#fff; }
+  .stage { width:600px; height:600px; background:#F8FAFC; }
+  svg { display:block; width:600px; height:600px; }
+</style></head><body>
+<div class="stage"><svg id="svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<script>
+const INK = '#101F35', ACCENT = '#2563EB', SOFT = '#DCE6F4', BG = '#F8FAFC';
+const SW = 9;
+
+const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+const seg = (t,a,b) => clamp((t-a)/(b-a), 0, 1);
+const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+const easeOut = t => 1 - Math.pow(1-t, 3);
+const lerp = (a,b,t) => a + (b-a)*t;
+const frac = x => x - Math.floor(x);
+
+function shell(inner) {
+  return `<g fill="none" stroke="${INK}" stroke-width="${SW}"
+           stroke-linecap="round" stroke-linejoin="round">${inner}</g>`;
+}
+
+// 1 — Open the box: flaps swing out, the compressed roll rises from inside.
+function scene1(t) {
+  const a = 112 * easeOut(seg(t, .03, .42));
+  const rollDy = lerp(62, -95, easeOut(seg(t, .34, .80)));
+  return shell(`
+    <rect x="262" y="250" width="76" height="170" rx="38" fill="${SOFT}"
+          transform="translate(0 ${rollDy.toFixed(2)})"/>
+    <rect x="160" y="300" width="280" height="190" rx="16" fill="${BG}"/>
+    <path d="M160 300 H440"/>
+    <path d="M300 300 V490" stroke="${SOFT}" stroke-width="6"/>
+    <rect x="160" y="286" width="140" height="15" rx="7" fill="${BG}"
+          transform="rotate(${(-a).toFixed(2)} 160 294)"/>
+    <rect x="300" y="286" width="140" height="15" rx="7" fill="${BG}"
+          transform="rotate(${a.toFixed(2)} 440 294)"/>
+  `);
+}
+
+// 2 — Unwrap: the seal releases, the roll expands into a pillow.
+function scene2(t) {
+  const cut = seg(t, .04, .22);
+  const e = easeOut(seg(t, .20, .76));
+  const w = lerp(96, 330, e), h = lerp(272, 182, e);
+  const x = 300 - w/2, y = 336 - h/2, rx = lerp(48, 64, e);
+  const seal = (1 - cut).toFixed(3);
+  const dip = seg(t, .52, .86).toFixed(3);
+  const puff = Math.sin(Math.PI * seg(t, .22, .78));
+  const rays = [0,1,2,3,4,5].map(i => {
+    const ang = -165 + i*30, r0 = lerp(70, 118, puff);
+    const rad = ang * Math.PI/180;
+    const x1 = 300 + Math.cos(rad)*r0, y1 = 336 + Math.sin(rad)*r0;
+    const x2 = 300 + Math.cos(rad)*(r0+26), y2 = 336 + Math.sin(rad)*(r0+26);
+    return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}"
+             stroke="${ACCENT}" stroke-width="7" opacity="${(puff*0.9).toFixed(2)}"/>`;
+  }).join('');
+  return shell(`
+    <rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}"
+          rx="${rx.toFixed(1)}" fill="${BG}"/>
+    <path d="M${(300-110)} ${(y+58).toFixed(1)} Q 300 ${(y+104).toFixed(1)} ${(300+110)} ${(y+58).toFixed(1)}"
+          opacity="${dip}"/>
+    <g opacity="${seal}">
+      <path d="M${(300-66)} 336 H${(300+66)}" stroke="${ACCENT}"/>
+      <path d="M${(300-60)} ${(y+46).toFixed(1)} H${(300+60)}"/>
+      <path d="M${(300-60)} ${(y+h-46).toFixed(1)} H${(300+60)}"/>
+    </g>
+    ${rays}
+  `);
+}
+
+// 3 — Sleep on it: a head resting, the pillow breathing, Zs drifting up.
+function scene3(t) {
+  const b = Math.sin(2*Math.PI*t);
+  const ph = 182 + b*7;
+  const py = 372 - ph/2;
+  const headY = 286 + b*5;
+  const zs = [0,1,2].map(k => {
+    const p = frac(t + k/3);
+    const zy = lerp(266, 132, p);
+    const op = Math.sin(Math.PI*p) * 0.95;
+    const s = lerp(0.72, 1.18, p);
+    return `<g transform="translate(424 ${zy.toFixed(1)}) scale(${s.toFixed(3)})" opacity="${op.toFixed(2)}">
+              <path d="M-17 -15 H17 L-17 15 H17" stroke-width="8"/>
+            </g>`;
+  }).join('');
+  return shell(`
+    <rect x="135" y="${py.toFixed(1)}" width="330" height="${ph.toFixed(1)}" rx="64" fill="${BG}"/>
+    <circle cx="288" cy="${headY.toFixed(1)}" r="52" fill="${BG}"/>
+    <path d="M178 ${(py+ph-52).toFixed(1)} Q 300 ${(py+ph-18).toFixed(1)} 422 ${(py+ph-52).toFixed(1)}"
+          stroke="${SOFT}" stroke-width="7"/>
+    ${zs}
+  `);
+}
+
+const SCENES = { 1: scene1, 2: scene2, 3: scene3 };
+window.render = (scene, t) => { document.getElementById('svg').innerHTML = SCENES[scene](t); };
+window.render(1, 0);
+</script></body></html>
