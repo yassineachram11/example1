@@ -459,3 +459,117 @@ new or additive and can go over as they are.
 Stock is read when the page is rendered. If Shopify serves a cached page the number
 can lag reality by a little, so treat "Only 4 left" as nearly-live rather than
 to-the-second.
+
+---
+
+# 3-pack, and a badge bug it exposed
+
+## The variant
+
+`Pilo 1.0` now has a third variant, created through the Admin API:
+
+| | Price | Compare-at | Components | Available |
+|---|---|---|---|---|
+| 1-pack | $80 | — | 1 × component | 100 |
+| 2-pack | $135 | $160 | 2 × component | 50 |
+| **3-pack** | **$185** | **$240** | **3 × component** | **33** |
+
+It is a Shopify Bundles parent (`requiresComponents: true`), so it holds no stock of
+its own — all three variants draw on the same 100-unit component pool. Compare-at is set
+to three singles ($240), which is what the $185 is actually a discount against.
+
+The 2-pack was already at $135 before this change; only the 3-pack was created here.
+
+## The bug it exposed
+
+The bundle block's automatic mode badged **every** row that saved anything:
+
+```liquid
+if units > 1 and save > 0
+  assign row_badge = block.settings.badge
+endif
+```
+
+With two variants that was fine — only the 2-pack ever qualified. With three, the 2-pack
+and the 3-pack both rendered "Best value", which is nonsense on its face and makes the
+whole ladder look arbitrary.
+
+The fix tracks the lowest per-unit price alongside the baseline and badges only that row:
+
+```liquid
+if best_per == 0 or per < best_per
+  assign best_per = per
+  assign best_id = v.id
+endif
+```
+```liquid
+if units > 1 and save > 0 and v.id == best_id
+```
+
+Manual mode (Pack option blocks) sets badges per row by hand and was never affected.
+
+| Theme | State |
+|---|---|
+| `azure-theme (staging)` (`210249285981`) | **Pushed and verified** — 33,272 bytes, `91f7e676…`, matching the local file byte for byte. |
+| `azure-theme` (`210145935709`, published) | Not applied — the API refuses writes to the live theme. Three small edits, below. |
+
+## Verifying the render
+
+Rendered offline against the three real variants. One caveat worth recording: the row
+maths leans on `v.title | split: 'x' | first | times: 1`, and **python-liquid and Shopify
+disagree on that filter**. Shopify's `Liquid::Utils.to_number` falls through to Ruby's
+`String#to_i`, so `"3-pack" | times: 1` is `3`; python-liquid returns `0`. Simulating
+without patching `times` to match Ruby gives a completely wrong picture — every pack looks
+like one unit. With the correct coercion:
+
+| Row | Units | Per pillow | Saving | Badge |
+|---|---|---|---|---|
+| 1-pack | 1 | $80.00 | — | — |
+| 2-pack | 2 | $67.50 | $25.00 | — |
+| 3-pack | 3 | $61.66 | $55.00 | **Best value** |
+
+Also checked: two variants only (behaves exactly as before the fix), a badly priced
+3-pack at $200 (badge still lands on the lowest per-unit row), and a single variant.
+
+## Applying it to the live theme
+
+**Edit code → `sections/main-product.liquid`**, inside the `bundle` block. Three edits:
+
+1. After `assign baseline = 0`, add:
+
+```liquid
+assign best_per = 0
+assign best_id = 0
+```
+
+2. In the `else` branch of the baseline loop (the one starting `for v in product.variants`),
+   after the `if per > baseline … endif`, add:
+
+```liquid
+if best_per == 0 or per < best_per
+  assign best_per = per
+  assign best_id = v.id
+endif
+```
+
+3. Further down, in the automatic row loop, change:
+
+```liquid
+if units > 1 and save > 0
+```
+
+to:
+
+```liquid
+if units > 1 and save > 0 and v.id == best_id
+```
+
+Until this is applied, the live storefront shows "Best value" on both the 2-pack and the
+3-pack.
+
+## Still worth cleaning up
+
+The `Pilo 1.0 — component stock (do not sell directly)` product is still ACTIVE and still
+carries a leftover `2x Bundle` variant priced $150 with a compare-at of $120 — a compare-at
+*below* the price, which renders as a nonsense strikethrough. Check it isn't published to
+the Online Store sales channel and delete that variant.

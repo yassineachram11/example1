@@ -142,6 +142,8 @@
                     leave wrong.
                   endcomment
                   assign baseline = 0
+                  assign best_per = 0
+                  assign best_id = 0
                   if manual
                     for b in section.blocks
                       if b.type == 'bundle_option'
@@ -171,6 +173,15 @@
                       assign per = v.price | divided_by: u
                       if per > baseline
                         assign baseline = per
+                      endif
+                      comment
+                        Track the cheapest pack per unit as well, so only one
+                        row can carry the badge. Without this, every pack that
+                        saves anything claims to be the best value.
+                      endcomment
+                      if best_per == 0 or per < best_per
+                        assign best_per = per
+                        assign best_id = v.id
                       endif
                     endfor
                   endif
@@ -242,7 +253,7 @@
                           assign full = baseline | times: units
                           assign save = full | minus: v.price
                           assign row_badge = ''
-                          if units > 1 and save > 0
+                          if units > 1 and save > 0 and v.id == best_id
                             assign row_badge = block.settings.badge
                           endif
                           assign selected = false
@@ -570,7 +581,7 @@
           "id": "badge",
           "label": "Automatic badge",
           "default": "Best value",
-          "info": "Only used when you have not added Pack option blocks below."
+          "info": "Goes on the pack with the lowest price per pillow. Only used when you have not added Pack option blocks below."
         },
         {
           "type": "paragraph",
