@@ -1,0 +1,121 @@
+/* Header theming — loaded by sections/header.liquid.
+   Every rule falls back to the global token, so the defaults reproduce the
+   original appearance exactly. */
+
+/* Announcement bar */
+.announcement-bar {
+  background: var(--announce-bg, var(--color-primary));
+  color: var(--announce-text, #fff);
+}
+
+.announcement-bar a { color: var(--announce-text, #fff); }
+
+/* Header bar */
+.header {
+  background: var(--header-bg, var(--color-background));
+  border-bottom: 1px solid var(--header-border, var(--color-border));
+}
+
+.header--flat { border-bottom: 0; }
+
+.header__inner { min-height: var(--header-height, 72px); }
+
+/* Scrolled / stuck state */
+.header-wrapper.is-stuck .header {
+  background: var(--header-sticky-bg, rgba(255, 255, 255, 0.88));
+}
+
+/* Logo */
+.header .header__logo-text { color: var(--header-text, var(--color-text)); }
+.header .header__logo:hover .header__logo-text { color: var(--header-accent, var(--color-primary)); }
+
+/* Navigation */
+.nav-link { color: var(--header-text, var(--color-text)); }
+
+.nav-link:hover,
+.nav-link[aria-current="page"],
+.nav-item[aria-current] > .nav-link {
+  color: var(--header-accent, var(--color-primary));
+}
+
+.nav-link::after { background: var(--header-accent, var(--color-primary)); }
+
+/* Dropdowns inherit the header surface */
+.nav-dropdown {
+  background: var(--header-bg, var(--color-background));
+  border-color: var(--header-border, var(--color-border));
+}
+
+.nav-dropdown a { color: var(--header-text, var(--color-text)); }
+
+.nav-dropdown a:hover {
+  background: var(--header-accent-soft, var(--color-primary-soft));
+  color: var(--header-accent, var(--color-primary));
+}
+
+/* Icon buttons */
+.header .icon-btn { color: var(--header-text, var(--color-text)); }
+
+.header .icon-btn:hover {
+  background: var(--header-accent-soft, var(--color-primary-soft));
+  color: var(--header-accent, var(--color-primary));
+}
+
+/* Cart badge — the ring is the header background so it reads as a cut-out */
+.header .cart-count {
+  background: var(--header-badge-bg, var(--color-primary));
+  color: var(--header-badge-text, #fff);
+  border-color: var(--header-bg, var(--color-background));
+}
+
+/* Launch countdown — takes over the announcement bar until the date passes */
+.announcement-bar[hidden] { display: none; }
+
+.countdown {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+.countdown__label { font-weight: 600; }
+
+.countdown__clock {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown__part {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+/* The days column is hidden on the last day, and inline-flex above would
+   otherwise beat the browser's own [hidden] rule. */
+.countdown__part[hidden] { display: none; }
+
+.countdown__part b {
+  font-weight: 700;
+  font-size: 1.05em;
+  min-width: 2ch;
+  text-align: right;
+}
+
+.countdown__part i {
+  font-style: normal;
+  font-size: 0.82em;
+  opacity: 0.72;
+}
+
+.countdown__cta {
+  margin-left: 4px;
+  font-weight: 700;
+}
+
+@media screen and (max-width: 480px) {
+  .countdown__label {
+    width: 100%;
+    font-size: 0.92em;
+  }
+}

@@ -1,0 +1,522 @@
+{{ 'header.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign sticky_class = ''
+  if section.settings.sticky_header
+    assign sticky_class = ' is-sticky'
+  endif
+
+  assign flat_class = ''
+  unless section.settings.show_bottom_border
+    assign flat_class = ' header--flat'
+  endunless
+
+  comment
+    Resolved here rather than inline: a colour picker cleared in the editor
+    renders empty, which would set the custom property to an empty value and
+    defeat the var() fallback instead of triggering it.
+  endcomment
+  assign c_announce_bg = section.settings.announcement_background | default: '#0171E3'
+  assign c_announce_text = section.settings.announcement_text_color | default: '#ffffff'
+  assign c_bg = section.settings.color_background | default: '#ffffff'
+  assign c_text = section.settings.color_text | default: '#0f172a'
+  assign c_accent = section.settings.color_accent | default: '#0171E3'
+  assign c_border = section.settings.color_border | default: '#e2e8f0'
+  assign c_badge_bg = section.settings.color_badge_background | default: '#0171E3'
+  assign c_badge_text = section.settings.color_badge_text | default: '#ffffff'
+
+  assign sticky_base = section.settings.sticky_background | default: '#ffffff'
+  assign sticky_alpha = section.settings.sticky_opacity | divided_by: 100.0
+  assign c_sticky = sticky_base | color_modify: 'alpha', sticky_alpha
+  assign c_accent_soft = c_accent | color_modify: 'alpha', 0.1
+
+  comment
+    Launch countdown. The date and hour are entered in the shop's own timezone,
+    so the shop's current UTC offset is appended before the string is resolved
+    to a Unix timestamp. That makes the deadline one absolute instant: every
+    visitor counts to the same moment, wherever they are, and a reload cannot
+    restart it.
+  endcomment
+  assign cd_on = false
+  assign cd_expired = false
+  assign cd_epoch = 0
+
+  if section.settings.show_countdown and section.settings.countdown_date != blank
+    assign cd_hour = section.settings.countdown_hour | prepend: '0' | slice: -2, 2
+    assign cd_zone = 'now' | date: '%z'
+    assign cd_zone_h = cd_zone | slice: 0, 3
+    assign cd_zone_m = cd_zone | slice: 3, 2
+    assign cd_iso = section.settings.countdown_date | append: 'T' | append: cd_hour | append: ':00:00' | append: cd_zone_h | append: ':' | append: cd_zone_m
+    assign cd_epoch = cd_iso | date: '%s' | times: 1
+    assign cd_now = 'now' | date: '%s' | times: 1
+
+    if cd_epoch > 0
+      assign cd_on = true
+      if cd_now >= cd_epoch
+        assign cd_expired = true
+      endif
+    endif
+  endif
+-%}
+
+{%- comment -%}
+  Written to :root rather than the element so --header-height is also visible
+  to the sticky offset on the product page.
+{%- endcomment -%}
+<style>
+  :root {
+    --header-height: {{ section.settings.header_height }}px;
+    --header-bg: {{ c_bg }};
+    --header-text: {{ c_text }};
+    --header-accent: {{ c_accent }};
+    --header-accent-soft: {{ c_accent_soft }};
+    --header-border: {{ c_border }};
+    --header-sticky-bg: {{ c_sticky }};
+    --header-badge-bg: {{ c_badge_bg }};
+    --header-badge-text: {{ c_badge_text }};
+    --announce-bg: {{ c_announce_bg }};
+    --announce-text: {{ c_announce_text }};
+  }
+</style>
+
+{%- comment -%}
+  While a countdown is running it takes the bar over, so the strip never
+  stacks two messages. Expiry is decided here rather than in JavaScript, so
+  the correct bar is served even with scripting off.
+{%- endcomment -%}
+{%- if cd_on and cd_expired == false -%}
+  <div class="announcement-bar">
+    <div
+      class="announcement-bar__inner countdown"
+      data-countdown
+      data-deadline="{{ cd_epoch }}"
+      data-expired-text="{{ section.settings.countdown_expired_text | escape }}"
+    >
+      {%- if section.settings.countdown_label != blank -%}
+        <span class="countdown__label">{{ section.settings.countdown_label }}</span>
+      {%- endif -%}
+      <span class="countdown__clock" role="timer" aria-live="off">
+        <span class="countdown__part"><b data-cd="d">0</b><i>d</i></span>
+        <span class="countdown__part"><b data-cd="h">00</b><i>h</i></span>
+        <span class="countdown__part"><b data-cd="m">00</b><i>m</i></span>
+        <span class="countdown__part"><b data-cd="s">00</b><i>s</i></span>
+      </span>
+      {%- if section.settings.countdown_link != blank and section.settings.countdown_cta != blank -%}
+        <a class="countdown__cta" href="{{ section.settings.countdown_link }}">
+          {{- section.settings.countdown_cta -}}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+  <script src="{{ 'countdown.js' | asset_url }}" defer="defer"></script>
+
+{%- elsif cd_on and section.settings.countdown_expired_text != blank -%}
+  <div class="announcement-bar">
+    <div class="announcement-bar__inner">
+      {%- if section.settings.countdown_link != blank -%}
+        <a href="{{ section.settings.countdown_link }}">{{ section.settings.countdown_expired_text }}</a>
+      {%- else -%}
+        <span>{{ section.settings.countdown_expired_text }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+
+{%- elsif section.settings.show_announcement -%}
+  <div class="announcement-bar">
+    <div class="announcement-bar__inner">
+      {%- if section.settings.announcement_icon != 'none' -%}
+        {%- render 'icon', name: section.settings.announcement_icon -%}
+      {%- endif -%}
+      {%- if section.settings.announcement_link != blank -%}
+        <a href="{{ section.settings.announcement_link }}">{{ section.settings.announcement_text }}</a>
+      {%- else -%}
+        <span>{{ section.settings.announcement_text }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+<div class="header-wrapper{{ sticky_class }}" data-header-wrapper>
+  <header class="header{{ flat_class }}">
+    <div class="page-width header__inner">
+      <button
+        type="button"
+        class="icon-btn header__menu-toggle"
+        data-panel-open="menu-drawer"
+        aria-label="{{ 'sections.header.menu' | t }}"
+        aria-controls="menu-drawer"
+      >
+        {%- render 'icon', name: 'menu' -%}
+      </button>
+
+      {%- if section.settings.logo_position == 'left' -%}
+        {%- render 'header-logo', section: section -%}
+        <nav class="header__nav" role="navigation" aria-label="{{ 'sections.header.menu' | t }}">
+          {%- render 'header-nav', menu: section.settings.menu, alignment: 'start' -%}
+        </nav>
+      {%- else -%}
+        <nav class="header__nav" role="navigation" aria-label="{{ 'sections.header.menu' | t }}">
+          {%- render 'header-nav', menu: section.settings.menu, alignment: 'start' -%}
+        </nav>
+        {%- render 'header-logo', section: section -%}
+      {%- endif -%}
+
+      <div class="header__actions">
+        {%- if section.settings.show_search -%}
+          <button
+            type="button"
+            class="icon-btn"
+            data-panel-open="search-modal"
+            aria-label="{{ 'general.search.search' | t }}"
+            aria-controls="search-modal"
+          >
+            {%- render 'icon', name: 'search' -%}
+          </button>
+        {%- endif -%}
+
+        {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
+          <a
+            class="icon-btn"
+            href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+            aria-label="{{ 'customer.account.title' | t }}"
+          >
+            {%- render 'icon', name: 'user' -%}
+          </a>
+        {%- endif -%}
+
+        {%- if settings.cart_type == 'drawer' -%}
+          <button
+            type="button"
+            class="icon-btn"
+            data-panel-open="cart-drawer"
+            aria-label="{{ 'sections.header.cart' | t }}"
+            aria-controls="cart-drawer"
+          >
+            {%- render 'icon', name: 'cart' -%}
+            <span class="cart-count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>
+              {{- cart.item_count -}}
+            </span>
+          </button>
+        {%- else -%}
+          <a class="icon-btn" href="{{ routes.cart_url }}" aria-label="{{ 'sections.header.cart' | t }}">
+            {%- render 'icon', name: 'cart' -%}
+            <span class="cart-count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>
+              {{- cart.item_count -}}
+            </span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </header>
+</div>
+
+{%- comment -%} Search modal {%- endcomment -%}
+<div id="search-modal" class="search-modal" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}" aria-hidden="true">
+  <div class="page-width">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form">
+      <label class="visually-hidden" for="search-modal-input">{{ 'general.search.search' | t }}</label>
+      <input
+        id="search-modal-input"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+        data-autofocus
+      >
+      <button type="submit" class="btn btn--primary">{{ 'general.search.search' | t }}</button>
+      <button type="button" class="icon-btn" data-panel-close aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icon', name: 'close' -%}
+      </button>
+    </form>
+  </div>
+</div>
+
+{%- comment -%} Mobile menu drawer {%- endcomment -%}
+<div id="menu-drawer" class="drawer drawer--left" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}" aria-hidden="true">
+  <div class="drawer__header">
+    <span class="drawer__title">{{ 'sections.header.menu' | t }}</span>
+    <button type="button" class="icon-btn" data-panel-close aria-label="{{ 'accessibility.close' | t }}">
+      {%- render 'icon', name: 'close' -%}
+    </button>
+  </div>
+
+  <div class="drawer__body">
+    <ul class="mobile-nav">
+      {%- for link in section.settings.menu.links -%}
+        <li>
+          {%- if link.links.size > 0 -%}
+            <button
+              type="button"
+              class="mobile-nav__toggle"
+              data-toggle
+              aria-expanded="false"
+              aria-controls="mobile-submenu-{{ forloop.index }}"
+            >
+              {{ link.title }}
+              {%- render 'icon', name: 'chevron-down' -%}
+            </button>
+            <ul class="mobile-nav__submenu" id="mobile-submenu-{{ forloop.index }}">
+              {%- for child in link.links -%}
+                <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- else -%}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+
+  {%- if shop.customer_accounts_enabled -%}
+    <div class="drawer__footer">
+      <a
+        class="btn btn--secondary btn--full"
+        href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+      >
+        {%- if customer -%}
+          {{ 'customer.account.title' | t }}
+        {%- else -%}
+          {{ 'customer.login_page.title' | t }}
+        {%- endif -%}
+      </a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement",
+      "default": "Free shipping on orders over $75 — delivered in 2–4 days"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
+    },
+    {
+      "type": "select",
+      "id": "announcement_icon",
+      "label": "Icon",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "truck", "label": "Delivery" },
+        { "value": "spark", "label": "Spark" },
+        { "value": "shield", "label": "Shield" }
+      ],
+      "default": "truck"
+    },
+    {
+      "type": "color",
+      "id": "announcement_background",
+      "label": "Announcement background",
+      "default": "#0171E3"
+    },
+    {
+      "type": "color",
+      "id": "announcement_text_color",
+      "label": "Announcement text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Launch countdown"
+    },
+    {
+      "type": "paragraph",
+      "content": "While it is running the countdown replaces the announcement above. Once the date passes the bar switches to the post-launch wording, or disappears if you leave that empty. It never restarts."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show a launch countdown",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "countdown_label",
+      "label": "Wording before the clock",
+      "default": "Launching in"
+    },
+    {
+      "type": "text",
+      "id": "countdown_date",
+      "label": "Launch date",
+      "info": "YYYY-MM-DD, read in your store's timezone (Settings → General). Leave empty to turn the countdown off."
+    },
+    {
+      "type": "range",
+      "id": "countdown_hour",
+      "label": "Launch hour",
+      "min": 0,
+      "max": 23,
+      "step": 1,
+      "default": 9,
+      "info": "24-hour clock, on the hour."
+    },
+    {
+      "type": "text",
+      "id": "countdown_expired_text",
+      "label": "After launch",
+      "default": "We're live — shop Pilo 1.0 now"
+    },
+    {
+      "type": "url",
+      "id": "countdown_link",
+      "label": "Link"
+    },
+    {
+      "type": "text",
+      "id": "countdown_cta",
+      "label": "Link text beside the clock",
+      "info": "Only shown when a link is set. Point it at a sign-up page so visitors leave you an email instead of leaving."
+    },
+    {
+      "type": "header",
+      "content": "Header colors"
+    },
+    {
+      "type": "color",
+      "id": "color_background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Logo text, links and icons",
+      "default": "#0f172a"
+    },
+    {
+      "type": "color",
+      "id": "color_accent",
+      "label": "Hover and active",
+      "default": "#0171E3"
+    },
+    {
+      "type": "color",
+      "id": "color_border",
+      "label": "Bottom border and dropdowns",
+      "default": "#e2e8f0"
+    },
+    {
+      "type": "color",
+      "id": "color_badge_background",
+      "label": "Cart badge background",
+      "default": "#0171E3"
+    },
+    {
+      "type": "color",
+      "id": "color_badge_text",
+      "label": "Cart badge text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Scrolled state"
+    },
+    {
+      "type": "paragraph",
+      "content": "Applies once the page is scrolled, while the header is stuck to the top."
+    },
+    {
+      "type": "color",
+      "id": "sticky_background",
+      "label": "Scrolled background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "sticky_opacity",
+      "label": "Scrolled opacity",
+      "min": 40,
+      "max": 100,
+      "step": 4,
+      "unit": "%",
+      "default": 88,
+      "info": "Below 100% the page shows through a frosted blur."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "header_height",
+      "label": "Header height",
+      "min": 56,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bottom_border",
+      "label": "Show bottom border",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "logo_position",
+      "label": "Logo position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Sticky header",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account",
+      "default": true
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

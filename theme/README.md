@@ -573,3 +573,88 @@ The `Pilo 1.0 — component stock (do not sell directly)` product is still ACTIV
 carries a leftover `2x Bundle` variant priced $150 with a compare-at of $120 — a compare-at
 *below* the price, which renders as a nonsense strikethrough. Check it isn't published to
 the Online Store sales channel and delete that variant.
+
+---
+
+# Launch countdown
+
+A countdown to a fixed launch date, living in the announcement bar rather than a second
+strip below it. Off by default — tick **Show a launch countdown** and set a date.
+
+| File | |
+|---|---|
+| `sections/header.liquid` | the deadline maths, the three bar states, seven new settings |
+| `assets/header.css` | `.countdown` styles appended |
+| `assets/countdown.js` | new — ticks the clock |
+
+| Theme | State |
+|---|---|
+| `azure-theme (staging)` (`210249285981`) | **Pushed and verified** — all three checksums match the local files byte for byte. |
+| `azure-theme` (`210145935709`, published) | Not applied. `header.liquid` and `header.css` were byte-identical on both themes before this, so the same files work on live — the API just will not write them. |
+
+## The three states
+
+The bar decides server-side which of these it is, so the right one is served even with
+JavaScript off:
+
+1. **Counting down** — label, clock, and an optional link. `countdown.js` ticks it.
+2. **Past the date** — the post-launch wording, linked if you set a link. If you leave
+   that wording empty the bar disappears instead.
+3. **Countdown off** — your normal announcement, exactly as before.
+
+It cannot loop. The deadline is one absolute instant, the expiry check happens in Liquid
+on every render, and the script's only end state is to stop.
+
+## How the deadline is built
+
+Shopify has no date-picker setting, so it is a `YYYY-MM-DD` text field plus an hour
+slider. Those are combined with the shop's **current UTC offset** and resolved to a Unix
+timestamp:
+
+```liquid
+assign cd_zone = 'now' | date: '%z'          {# +0300 #}
+assign cd_iso = countdown_date | append: 'T' | append: cd_hour | append: ':00:00'
+                               | append: cd_zone_h | append: ':' | append: cd_zone_m
+assign cd_epoch = cd_iso | date: '%s'
+```
+
+Appending the offset before resolving matters: a bare `2026-10-15 09:00:00` leaves the
+parser to guess a timezone, while `2026-10-15T09:00:00+03:00` is one unambiguous instant
+for every visitor on earth. Only the epoch reaches the browser, so nothing is re-parsed
+in the visitor's own timezone.
+
+**DST caveat.** The offset used is the shop's offset *now*, not on the launch date.
+Lebanon changes clocks in late October, so a launch date on the far side of that boundary
+lands an hour out. Nudge the hour setting if it matters.
+
+## Checked in Chromium
+
+Five states driven in a real browser against the real CSS, no console errors:
+
+| | Result |
+|---|---|
+| 12 days out | `Launching in 12d 04h 31m 06s` |
+| Under a day | days column drops out — `03h 04m 57s` |
+| Ticking | seconds decrement |
+| Reaching zero | swaps to the post-launch line, keeps the link, does not loop |
+| Already past, no wording set | bar hides, `display: none` |
+
+Rendered at 900px and 390px: on a phone the label wraps to its own line and the clock
+sits below it.
+
+## Applying it to the live theme
+
+`header.liquid` and `header.css` were identical on both themes, so copy the staging
+versions over wholesale rather than hand-patching, and add `assets/countdown.js` as a new
+file. All three are in `theme/live/`.
+
+## What actually moves the needle
+
+The timer creates anticipation; it does not by itself convert. A visitor who sees a
+countdown and nothing else just leaves, and most never come back. The setting that earns
+its keep is **Link text beside the clock** — point it at a sign-up page so people hand
+over an email before they go. You already have Klaviyo for the rest.
+
+And keep this to a real launch. A timer counting to a date that never arrives, or one
+that resets per visitor, is the version shoppers have learned to distrust — this one is
+built so it cannot do either.
