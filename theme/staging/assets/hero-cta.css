@@ -5,20 +5,15 @@
 
 .hero-cta {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
   z-index: 90;
   display: flex;
   justify-content: center;
-  padding: var(--space-sm) var(--page-gutter);
-  padding-bottom: max(var(--space-sm), env(safe-area-inset-bottom, 0px));
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
-  border-top: 1px solid var(--color-border);
-  box-shadow: 0 -8px 28px rgba(15, 23, 42, 0.09);
-  transform: translateY(110%);
+  /* Clears the phone's home indicator without moving on a desktop, where the
+     inset resolves to zero. */
+  bottom: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
+  max-width: calc(100% - (var(--page-gutter) * 2));
+  transform: translate(-50%, 160%);
   visibility: hidden;
   transition:
     transform var(--duration-slow) var(--ease-out),
@@ -26,41 +21,18 @@
 }
 
 .hero-cta.is-visible {
-  transform: translateY(0);
+  transform: translate(-50%, 0);
   visibility: visible;
 }
 
-/* Full width on a phone so it is reachable with a thumb. */
+/* One pill at every width. A full-width bar on phones reads as far heavier
+   than the button it is standing in for. */
 .hero-cta .btn {
-  width: 100%;
-  justify-content: center;
-}
-
-@media screen and (min-width: 750px) {
-  /* On a wide screen a full-width bar walls off the page for one link, so it
-     becomes a floating pill instead. */
-  .hero-cta {
-    left: 50%;
-    right: auto;
-    bottom: var(--space-lg);
-    padding: 0;
-    background: none;
-    border-top: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    transform: translate(-50%, 160%);
-  }
-
-  .hero-cta.is-visible { transform: translate(-50%, 0); }
-
-  .hero-cta .btn {
-    width: auto;
-    border-radius: var(--radius-pill);
-    box-shadow:
-      0 2px 6px rgba(15, 23, 42, 0.10),
-      0 8px 24px rgba(15, 23, 42, 0.18);
-  }
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  box-shadow:
+    0 2px 6px rgba(15, 23, 42, 0.10),
+    0 8px 24px rgba(15, 23, 42, 0.18);
 }
 
 @media (prefers-reduced-motion: reduce) {

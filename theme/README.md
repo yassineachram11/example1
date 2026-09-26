@@ -687,9 +687,11 @@ appear at the same point in a scroll.
 The two are never on screen together — while you can see the real Shop Now, the sticky one
 is hidden and `aria-hidden="true"`.
 
-**Phones** get a full-width bar along the bottom, inside the safe-area inset, so it is
-reachable with a thumb. **Desktop** gets a floating pill centred above the fold line,
-because a full-width bar walls off the page for the sake of one link.
+**One pill at every width**, centred above the bottom edge. It started as a full-width bar
+on phones for thumb reach, but that reads as far heavier than the button it stands in for,
+so it now matches the desktop treatment exactly: 154 x 55px, fully rounded, identical at
+1200px, 390px and 360px. `bottom` adds the safe-area inset so it clears a phone's home
+indicator while sitting still on a desktop, where that inset is zero.
 
 Without `IntersectionObserver` the bar stays hidden rather than pinning itself over the
 page from the first paint.
@@ -703,9 +705,10 @@ At 1200px and 390px, against the real `base.css`:
 | At the top | hidden, `aria-hidden="true"` | hidden, `aria-hidden="true"` |
 | Scrolled past the hero | visible, on screen | visible, on screen |
 | Back at the top | hidden again | hidden again |
-| Shape | 154px pill, radius 999px | full width, radius 8px |
+| Shape | 154 x 55px pill, radius 999px | identical |
 
-No console errors at either width.
+Re-measured at 1200px, 390px and 360px after the bar was replaced by the pill: same width,
+same height, centred and inside the viewport at all three. No console errors.
 
 ## Two things to watch
 
@@ -713,9 +716,9 @@ No console errors at either width.
 cart drawer overlay, so neither gets covered.
 
 **The WhatsApp button.** Moose WhatsApp renders its own floating button, usually bottom
-right. On desktop the sticky pill is centred so they should not collide, but on a phone the
-full-width bar may sit under or over it. Worth a look on a real phone once this is on, and
-easy to fix by moving the WhatsApp bubble in that app's settings.
+right. The pill is centred, so on most screens they sit clear of each other — but the two
+are closest on a narrow phone. Worth a look on a real device once this is on, and easy to
+fix by moving the WhatsApp bubble in that app's settings.
 
 ## Wording
 
