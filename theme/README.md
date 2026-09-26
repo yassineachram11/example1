@@ -658,3 +658,67 @@ over an email before they go. You already have Klaviyo for the rest.
 And keep this to a real launch. A timer counting to a date that never arrives, or one
 that resets per visitor, is the version shoppers have learned to distrust — this one is
 built so it cannot do either.
+
+---
+
+# Sticky Shop Now button
+
+The hero's primary button comes back along the bottom of the screen once it has scrolled
+away. Off by default — tick **Hero → Sticky button → Keep the primary button on screen**.
+
+| File | |
+|---|---|
+| `sections/hero.liquid` | anchor on the real button, the fixed copy, four new settings |
+| `assets/hero-cta.css` | new |
+| `assets/hero-cta.js` | new |
+
+| Theme | State |
+|---|---|
+| `azure-theme (staging)` (`210249285981`) | **Pushed and verified** — all three checksums match the local files byte for byte. |
+| `azure-theme` (`210145935709`, published) | Not applied. Copies are in `theme/live/`. |
+
+## How it behaves
+
+It deliberately mirrors the product page's buy bar rather than inventing a second pattern:
+an `IntersectionObserver` watches the real button (`data-hero-anchor`) and reveals the copy
+when it leaves the viewport, using the same `rootMargin: 0px 0px -48px 0px` so both bars
+appear at the same point in a scroll.
+
+The two are never on screen together — while you can see the real Shop Now, the sticky one
+is hidden and `aria-hidden="true"`.
+
+**Phones** get a full-width bar along the bottom, inside the safe-area inset, so it is
+reachable with a thumb. **Desktop** gets a floating pill centred above the fold line,
+because a full-width bar walls off the page for the sake of one link.
+
+Without `IntersectionObserver` the bar stays hidden rather than pinning itself over the
+page from the first paint.
+
+## Checked in Chromium
+
+At 1200px and 390px, against the real `base.css`:
+
+| | Desktop | Mobile |
+|---|---|---|
+| At the top | hidden, `aria-hidden="true"` | hidden, `aria-hidden="true"` |
+| Scrolled past the hero | visible, on screen | visible, on screen |
+| Back at the top | hidden again | hidden again |
+| Shape | 154px pill, radius 999px | full width, radius 8px |
+
+No console errors at either width.
+
+## Two things to watch
+
+**z-index 90**, the same as the product page's buy bar — under the header and under the
+cart drawer overlay, so neither gets covered.
+
+**The WhatsApp button.** Moose WhatsApp renders its own floating button, usually bottom
+right. On desktop the sticky pill is centred so they should not collide, but on a phone the
+full-width bar may sit under or over it. Worth a look on a real phone once this is on, and
+easy to fix by moving the WhatsApp bubble in that app's settings.
+
+## Wording
+
+The sticky copy reuses the hero's own button label unless you set **Sticky button wording**.
+Your hero says "Shop Now", so that is what appears. A shorter word sometimes reads better in
+a bar than in a hero — "Shop Pilo 1.0" or just "Shop" are both fine there.

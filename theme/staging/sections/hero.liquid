@@ -76,6 +76,11 @@
   {{ 'hero-video.css' | asset_url | stylesheet_tag }}
 {%- endif -%}
 
+{%- if section.settings.sticky_cta and section.settings.button_label != blank -%}
+  {{ 'hero-cta.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'hero-cta.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
 <section
   class="hero {{ layout_class }}{{ modifier }}"
   style="
@@ -166,7 +171,11 @@
       {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
         <div class="hero__buttons reveal reveal--up" style="--reveal-delay: 220ms;">
           {%- if section.settings.button_label != blank -%}
-            <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--primary btn--lg">
+            <a
+              href="{{ section.settings.button_link | default: routes.all_products_collection_url }}"
+              class="btn btn--primary btn--lg"
+              data-hero-anchor
+            >
               {{ section.settings.button_label }}
               {%- render 'icon', name: 'arrow-right' -%}
             </a>
@@ -253,6 +262,29 @@
   </div>
 </section>
 
+{%- comment -%}
+  A copy of the primary button, fixed to the bottom of the screen. It is only
+  revealed once the real one above has scrolled away, so the two are never on
+  screen together.
+{%- endcomment -%}
+{%- if section.settings.sticky_cta and section.settings.button_label != blank -%}
+  {%- liquid
+    assign cta_label = section.settings.sticky_cta_label
+    if cta_label == blank
+      assign cta_label = section.settings.button_label
+    endif
+  -%}
+  <div class="hero-cta" data-hero-cta aria-hidden="true">
+    <a
+      href="{{ section.settings.button_link | default: routes.all_products_collection_url }}"
+      class="btn btn--primary btn--lg"
+    >
+      {{ cta_label }}
+      {%- render 'icon', name: 'arrow-right' -%}
+    </a>
+  </div>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "Hero",
@@ -334,6 +366,26 @@
       "type": "url",
       "id": "button_link_2",
       "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Sticky button"
+    },
+    {
+      "type": "paragraph",
+      "content": "Brings the primary button back along the bottom of the screen once it has scrolled out of view — a full-width bar on phones, a floating pill on desktop. It is never on screen at the same time as the real button."
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_cta",
+      "label": "Keep the primary button on screen",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "sticky_cta_label",
+      "label": "Sticky button wording",
+      "info": "Leave empty to reuse the primary button's wording."
     },
     {
       "type": "header",
