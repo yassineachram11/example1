@@ -1,0 +1,143 @@
+/* Pilo against its own category — loaded by sections/comparison-table.liquid.
+   A three-column grid rather than a table element, so the same markup can
+   shrink to a phone without a horizontal scrollbar. */
+
+.vs__header {
+  max-width: 60ch;
+  margin: 0 auto var(--space-xl);
+  text-align: center;
+}
+
+.vs__header h2 { margin: var(--space-xs) 0 var(--space-sm); }
+.vs__header .rte { color: var(--color-text-muted); }
+
+.vs__table {
+  max-width: var(--vs-width, 820px);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.5rem 7.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+/* Header row */
+.vs__head {
+  display: contents;
+}
+
+.vs__corner,
+.vs__col {
+  padding: var(--space-md) var(--space-sm);
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.vs__corner { border-bottom-color: var(--color-border); }
+
+/* The product's own column is tinted the whole way down, so the eye can
+   follow it without every cell needing its own treatment. */
+.vs__col--mine,
+.vs__cell--mine {
+  background: var(--color-primary-soft);
+}
+
+.vs__col--mine { color: var(--color-primary); }
+
+/* Rows */
+.vs__row { display: contents; }
+
+.vs__label,
+.vs__cell {
+  padding: var(--space-md) var(--space-sm);
+  border-bottom: 1px solid var(--color-border-strong, var(--color-border));
+  border-bottom-color: var(--color-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.vs__label {
+  gap: 2px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding-left: var(--space-md);
+}
+
+.vs__label small {
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.vs__cell {
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.vs__cell small {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.vs__row:last-child .vs__label,
+.vs__row:last-child .vs__cell { border-bottom: 0; }
+
+/* States */
+.vs__cell svg { width: 22px; height: 22px; flex: none; }
+.vs__cell.is-yes svg { color: var(--color-success); }
+.vs__cell.is-no svg { color: var(--color-border-strong); }
+
+/* A short bar rather than a cross: "some do" is not a failure. */
+.vs__partial {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-text-muted);
+  opacity: 0.55;
+}
+
+.vs__footnote {
+  max-width: var(--vs-width, 820px);
+  margin: var(--space-sm) auto 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.vs__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-xl);
+}
+
+@media screen and (max-width: 640px) {
+  .vs__table { grid-template-columns: minmax(0, 1fr) 4.75rem 4.75rem; }
+
+  .vs__corner,
+  .vs__col,
+  .vs__label,
+  .vs__cell {
+    padding: var(--space-sm) var(--space-xs);
+  }
+
+  .vs__label { padding-left: var(--space-sm); }
+
+  /* The column headings are the first thing to overflow, so they wrap rather
+     than forcing the grid wider than the screen. */
+  .vs__col {
+    font-size: var(--text-xs);
+    line-height: 1.25;
+    hyphens: auto;
+  }
+
+  .vs__cell svg { width: 19px; height: 19px; }
+}

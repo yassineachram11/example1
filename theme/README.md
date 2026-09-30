@@ -725,3 +725,71 @@ fix by moving the WhatsApp bubble in that app's settings.
 The sticky copy reuses the hero's own button label unless you set **Sticky button wording**.
 Your hero says "Shop Now", so that is what appears. A shorter word sometimes reads better in
 a bar than in a hero — "Shop Pilo 1.0" or just "Shop" are both fine there.
+
+---
+
+# Pilo vs other ergonomic pillows
+
+A row-by-row comparison against the category. Distinct from the existing comparison slider,
+which is Pilo against an ordinary pillow — this one is against other pillows that also claim
+to be ergonomic, which is a different argument and a much easier one to overstate.
+
+| File | |
+|---|---|
+| `sections/comparison-table.liquid` | new |
+| `assets/comparison-table.css` | new |
+| `templates/product.json` | the section placed between the slider and the specs |
+
+| Theme | State |
+|---|---|
+| `azure-theme (staging)` (`210249285981`) | **Pushed and placed** — both file checksums match the local copies, and the template was re-read afterwards to confirm the section landed and nothing else moved. |
+| `azure-theme` (`210145935709`, published) | Not applied. Files are in `theme/live/`; the section still has to be added to the live product template by hand. |
+
+## Three states, not two
+
+Every row is Yes / **Sometimes** / No rather than a tick or a cross. That is the whole
+design. The truthful answer to "do other ergonomic pillows have a washable cover" is *some
+do*, and forcing that into a red cross is exactly what makes these tables read as marketing
+rather than information. Sometimes renders as a short grey bar, not a failure mark.
+
+The block setting for the other column defaults to **Sometimes** for the same reason, with a
+note in the editor explaining why.
+
+The other column is labelled by category (`Most ergonomic pillows`), never by brand. Naming
+a competitor turns every row into a factual claim about a specific company that you would
+have to be able to prove.
+
+## Rows to verify before this goes live
+
+The Pilo column is drawn from things already on the site — contour foam, OEKO-TEX, zip-off
+washable cover, back and side sleeping, free delivery, cash on delivery. Those are yours and
+they are safe.
+
+The other column is a reasonable reading of the category, **not researched fact**. Two rows
+in particular assert a flat No about other sellers:
+
+- **Free delivery across Lebanon** — some local sellers may well offer it
+- **Bought locally, not shipped from abroad** — some competitors are local too
+
+Check both against what is actually sold in Lebanon, and change either to Sometimes if you
+are not certain. The footnote says the comparison is based on pillows sold in Lebanon at a
+comparable price in September 2026 — that claim has to be true, so update the month if this
+sits unchanged for a while.
+
+## Layout
+
+A three-column CSS grid rather than a `<table>`, so it shrinks to a phone without a
+horizontal scrollbar. Measured at 1100px, 390px and 360px: no page overflow, no cell
+clipped, no text truncated. The Pilo column is tinted the whole way down so the eye can
+follow it.
+
+The button under the table is deliberately left empty on the product page — the buy
+buttons are already a few hundred pixels up, and a second CTA there just scrolls people
+back to where they came from. Fill it in if the section is ever used on the homepage.
+
+## A note on testing this one
+
+The first render came out blank. That was the harness, not the section: `.reveal` elements
+sit at `opacity: 0` until theme.js adds `.is-visible`, and the test page had neither
+theme.js nor the `no-js` class that `base.css` falls back on. Worth remembering when
+checking any section in this theme offline — add `.is-visible` before screenshotting.

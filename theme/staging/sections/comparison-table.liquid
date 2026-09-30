@@ -1,0 +1,254 @@
+{%- comment -%}
+  Pilo against the rest of its own category, row by row.
+
+  Every row carries three states rather than a tick or a cross, because on most
+  claims the truthful answer about other brands is "some do, some don't".
+  Forcing that into a cross is the thing that makes these tables read as
+  marketing rather than information.
+{%- endcomment -%}
+
+{{ 'comparison-table.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="section vs"
+  style="
+    background: {{ section.settings.background }};
+    --vs-width: {{ section.settings.max_width }}px;
+  "
+>
+  <div class="page-width">
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.text != blank -%}
+      <div class="vs__header reveal reveal--up">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2>{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <div class="rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="vs__table reveal reveal--up" style="--reveal-delay: 80ms;" role="table">
+      <div class="vs__head" role="row">
+        <span class="vs__corner" role="columnheader"></span>
+        <span class="vs__col vs__col--mine" role="columnheader">
+          {{- section.settings.mine_label -}}
+        </span>
+        <span class="vs__col" role="columnheader">
+          {{- section.settings.theirs_label -}}
+        </span>
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.settings.label != blank -%}
+          <div class="vs__row" role="row" {{ block.shopify_attributes }}>
+            <span class="vs__label" role="cell">
+              {{ block.settings.label }}
+              {%- if block.settings.note != blank -%}
+                <small>{{ block.settings.note }}</small>
+              {%- endif -%}
+            </span>
+
+            {%- for side in (1..2) -%}
+              {%- liquid
+                if side == 1
+                  assign state = block.settings.mine
+                  assign detail = block.settings.mine_note
+                  assign cell_class = 'vs__cell vs__cell--mine'
+                else
+                  assign state = block.settings.theirs
+                  assign detail = block.settings.theirs_note
+                  assign cell_class = 'vs__cell'
+                endif
+              -%}
+              <span class="{{ cell_class }} is-{{ state }}" role="cell">
+                {%- case state -%}
+                  {%- when 'yes' -%}
+                    {%- render 'icon', name: 'check' -%}
+                    <span class="visually-hidden">Yes</span>
+                  {%- when 'no' -%}
+                    {%- render 'icon', name: 'close' -%}
+                    <span class="visually-hidden">No</span>
+                  {%- else -%}
+                    <span class="vs__partial" aria-hidden="true"></span>
+                    <span class="visually-hidden">Sometimes</span>
+                {%- endcase -%}
+                {%- if detail != blank -%}
+                  <small>{{ detail }}</small>
+                {%- endif -%}
+              </span>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.footnote != blank -%}
+      <p class="vs__footnote">{{ section.settings.footnote }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="vs__cta">
+        <a href="{{ section.settings.button_link }}" class="btn btn--primary btn--lg">
+          {{ section.settings.button_label }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "How we compare"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Pilo 1.0 vs other ergonomic pillows"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro",
+      "default": "<p>Plenty of pillows claim ergonomic support. Here is what you actually get, and where the category is split.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Columns"
+    },
+    {
+      "type": "text",
+      "id": "mine_label",
+      "label": "Your column",
+      "default": "Pilo 1.0"
+    },
+    {
+      "type": "text",
+      "id": "theirs_label",
+      "label": "Their column",
+      "default": "Most ergonomic pillows",
+      "info": "Describe the category, not a brand. Naming a competitor turns every row into a claim you have to be able to prove about that company."
+    },
+    {
+      "type": "header",
+      "content": "Below the table"
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Footnote",
+      "default": "Based on pillows sold in Lebanon at a comparable price, September 2026.",
+      "info": "Say what you compared and when. A table with no basis is the part shoppers discount."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button",
+      "default": "Shop Pilo 1.0"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 600,
+      "max": 1100,
+      "step": 20,
+      "unit": "px",
+      "default": 820
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Comparison row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "What you are comparing",
+          "default": "Adaptive contour foam"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Small note under the label"
+        },
+        {
+          "type": "select",
+          "id": "mine",
+          "label": "Pilo",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "partial", "label": "Sometimes" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "yes"
+        },
+        {
+          "type": "text",
+          "id": "mine_note",
+          "label": "Pilo detail",
+          "info": "A few words under the mark, for example \"1-5 days\"."
+        },
+        {
+          "type": "select",
+          "id": "theirs",
+          "label": "Others",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "partial", "label": "Sometimes" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "partial",
+          "info": "Choose Sometimes unless you are certain it is true of every pillow in the category. It is usually the honest answer, and it is the one shoppers believe."
+        },
+        {
+          "type": "text",
+          "id": "theirs_note",
+          "label": "Others detail"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison table",
+      "blocks": [
+        { "type": "row", "settings": { "label": "Adaptive contour foam", "mine": "yes", "theirs": "partial" } },
+        { "type": "row", "settings": { "label": "OEKO-TEX® STANDARD 100 certified", "mine": "yes", "theirs": "partial", "note": "Every component lab tested for harmful substances" } },
+        { "type": "row", "settings": { "label": "Cover zips off and machine washes", "mine": "yes", "theirs": "partial" } },
+        { "type": "row", "settings": { "label": "Works for back and side sleepers", "mine": "yes", "theirs": "partial" } },
+        { "type": "row", "settings": { "label": "Free delivery across Lebanon", "mine": "yes", "mine_note": "1-5 days", "theirs": "no" } },
+        { "type": "row", "settings": { "label": "Cash on delivery", "mine": "yes", "theirs": "partial" } },
+        { "type": "row", "settings": { "label": "Bought locally, not shipped from abroad", "mine": "yes", "theirs": "no", "theirs_note": "Often weeks by post" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
