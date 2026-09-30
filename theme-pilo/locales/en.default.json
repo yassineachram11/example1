@@ -1,0 +1,59 @@
+{
+  "general": {
+    "meta": { "tags": "Tagged \"{{ tags }}\"", "page": "Page {{ page }}" },
+    "search": { "search": "Search", "placeholder": "What are you looking for?", "results_for": "Results for \"{{ terms }}\"", "no_results": "Nothing matched \"{{ terms }}\"." },
+    "pagination": { "previous": "Previous", "next": "Next" },
+    "password_page": { "password": "Password", "enter": "Enter" },
+    "continue_shopping": "Continue shopping",
+    "close": "Close",
+    "menu": "Menu"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "buy_now": "Buy it now",
+      "quantity": "Quantity",
+      "increase": "Add one",
+      "decrease": "Remove one",
+      "save_amount": "Save {{ amount }}",
+      "each": "{{ amount }} each",
+      "from": "From",
+      "in_stock": "In stock",
+      "low_stock": "Only {{ count }} left",
+      "out_of_stock": "Out of stock",
+      "view_image": "Show image {{ index }}",
+      "or": "or"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "empty_text": "Nothing here yet.",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "view_cart": "View cart",
+    "remove": "Remove",
+    "taxes_note": "Taxes and any duties are worked out at checkout.",
+    "quantity": "Quantity",
+    "increase": "Add one",
+    "decrease": "Remove one"
+  },
+  "customer": {
+    "account": { "title": "Account", "details": "Account details", "orders": "Orders", "log_out": "Log out", "return": "Return to account" },
+    "login": { "title": "Log in", "email": "Email", "password": "Password", "submit": "Log in", "forgot": "Forgot your password?", "create": "Create an account", "cancel": "Cancel" },
+    "register": { "title": "Create an account", "first_name": "First name", "last_name": "Last name", "email": "Email", "password": "Password", "submit": "Create" },
+    "recover": { "title": "Reset your password", "subtext": "We will email you a reset link.", "submit": "Send", "success": "Check your email for the link." },
+    "activate": { "title": "Activate your account", "submit": "Activate", "decline": "Decline" },
+    "addresses": { "title": "Addresses", "add": "Add an address", "edit": "Edit", "delete": "Delete", "default": "Default address" },
+    "order": { "title": "Order {{ name }}", "date": "Placed on {{ date }}", "product": "Product", "quantity": "Qty", "total": "Total" }
+  },
+  "sections": {
+    "header": { "cart": "Cart", "menu": "Menu", "search": "Search", "account": "Account" }
+  },
+  "accessibility": { "close": "Close", "skip_to_content": "Skip to content" },
+  "gift_cards": { "issued": { "title": "Your gift card", "subtext": "Here is your gift card.", "code": "Gift card code", "shop_link": "Start shopping" } },
+  "blogs": { "article": { "read_more": "Read more", "back": "Back to all posts" } },
+  "onboarding": { "no_content": "This section has no content yet." }
+}

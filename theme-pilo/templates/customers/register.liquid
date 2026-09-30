@@ -1,0 +1,30 @@
+<section class="band band--tight">
+  <div class="wrap" style="max-width: 460px;">
+    <h1>{{ 'customer.register.title' | t }}</h1>
+
+    {%- form 'create_customer' -%}
+      {{ form.errors | default_errors }}
+      <div class="field">
+        <label for="reg-first">{{ 'customer.register.first_name' | t }}</label>
+        <input type="text" name="customer[first_name]" id="reg-first" autocomplete="given-name">
+      </div>
+      <div class="field">
+        <label for="reg-last">{{ 'customer.register.last_name' | t }}</label>
+        <input type="text" name="customer[last_name]" id="reg-last" autocomplete="family-name">
+      </div>
+      <div class="field">
+        <label for="reg-email">{{ 'customer.register.email' | t }}</label>
+        <input type="email" name="customer[email]" id="reg-email" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="reg-password">{{ 'customer.register.password' | t }}</label>
+        <input type="password" name="customer[password]" id="reg-password" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn--primary btn--full">{{ 'customer.register.submit' | t }}</button>
+    {%- endform -%}
+
+    <p class="form-note" style="margin-top: 20px;">
+      <a href="{{ routes.account_login_url }}">{{ 'customer.login.title' | t }}</a>
+    </p>
+  </div>
+</section>

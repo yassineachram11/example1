@@ -1,0 +1,69 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} { background: {{ section.settings.background }}; }
+{%- endstyle -%}
+
+<section class="band band--tight">
+  <div class="wrap">
+    <ul class="usps" role="list">
+      {%- for block in section.blocks -%}
+        <li class="usp" {{ block.shopify_attributes }}>
+          {%- render 'icon', name: block.settings.icon -%}
+          <div>
+            <span class="usp__title">{{ block.settings.title }}</span>
+            {%- if block.settings.note != blank -%}
+              <span class="usp__note">{{ block.settings.note }}</span>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promise strip",
+  "tag": "section",
+  "class": "section-usp-strip",
+  "settings": [
+    { "type": "color", "id": "background", "label": "Background", "default": "#F4F6F9" }
+  ],
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "Promise",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Delivery" },
+            { "value": "cash", "label": "Cash" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "check", "label": "Check" },
+            { "value": "chat", "label": "Chat" },
+            { "value": "lock", "label": "Lock" }
+          ],
+          "default": "check"
+        },
+        { "type": "text", "id": "title", "label": "Promise", "default": "Free delivery" },
+        { "type": "text", "id": "note", "label": "Detail", "default": "Anywhere in Lebanon" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Promise strip",
+      "blocks": [
+        { "type": "usp", "settings": { "icon": "truck", "title": "Free delivery", "note": "Anywhere in Lebanon" } },
+        { "type": "usp", "settings": { "icon": "cash", "title": "Cash on delivery", "note": "Pay when it arrives" } },
+        { "type": "usp", "settings": { "icon": "leaf", "title": "OEKO-TEX certified", "note": "Tested for harmful substances" } },
+        { "type": "usp", "settings": { "icon": "chat", "title": "We answer", "note": "WhatsApp, same day" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

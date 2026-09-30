@@ -1,0 +1,24 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "contact": {
+          "type": "contact",
+          "settings": {
+            "title": "Talk to us",
+            "wa_label": "Message us on WhatsApp",
+            "note": "We answer every day of the week."
+          }
+        }
+      },
+      "block_order": ["contact"],
+      "settings": {
+        "blurb": "One pillow, engineered for your neck. Made for Lebanon."
+      }
+    }
+  },
+  "order": ["footer"]
+}

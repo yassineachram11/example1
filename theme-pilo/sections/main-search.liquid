@@ -1,0 +1,38 @@
+<section class="band band--tight">
+  <div class="wrap">
+    <h1>{{ 'general.search.search' | t }}</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-form">
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" aria-label="{{ 'general.search.search' | t }}">
+      <button type="submit" class="btn btn--primary">{{ 'general.search.search' | t }}</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        {%- if search.results.size > 0 -%}
+          <p class="lede" style="margin-bottom: 20px;">{{ 'general.search.results_for' | t: terms: search.terms }}</p>
+          <div class="grid-cards">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {%- render 'card', product: item -%}
+              {%- else -%}
+                <a class="card card--text" href="{{ item.url }}">
+                  <div class="card__body">
+                    <span class="card__name">{{ item.title }}</span>
+                  </div>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {%- render 'pagination', paginate: paginate -%}
+        {%- else -%}
+          <p class="lede">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Search", "tag": "section", "class": "section-main-search", "settings": [] }
+{% endschema %}

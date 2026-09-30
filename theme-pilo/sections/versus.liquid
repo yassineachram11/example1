@@ -1,0 +1,135 @@
+{%- comment -%}
+  Us against the category. Rows admit a "some do" state, because a table where
+  every rival column is a cross reads as marketing and gets discounted.
+{%- endcomment -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} { background: {{ section.settings.background }}; }
+  #shopify-section-{{ section.id }} .vs { max-width: {{ section.settings.max_width }}px; }
+{%- endstyle -%}
+
+<section class="band">
+  <div class="wrap">
+    <div class="band__head band__head--center rise">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2>{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}
+        <div class="lede rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="vs rise">
+      <table class="vs__table">
+        <thead>
+          <tr>
+            <th scope="col"><span class="visually-hidden">Feature</span></th>
+            <th scope="col" class="vs__mine">{{ section.settings.mine_label }}</th>
+            <th scope="col">{{ section.settings.theirs_label }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for block in section.blocks -%}
+            <tr {{ block.shopify_attributes }}>
+              <th scope="row">
+                <span class="vs__label">{{ block.settings.label }}</span>
+                {%- if block.settings.note != blank -%}
+                  <span class="vs__note">{{ block.settings.note }}</span>
+                {%- endif -%}
+              </th>
+              {%- for side in (1..2) -%}
+                {%- liquid
+                  if side == 1
+                    assign state = block.settings.mine
+                    assign state_note = block.settings.mine_note
+                  else
+                    assign state = block.settings.theirs
+                    assign state_note = block.settings.theirs_note
+                  endif
+                -%}
+                <td class="vs__cell vs__cell--{{ state }}{% if side == 1 %} vs__mine{% endif %}">
+                  {%- case state -%}
+                    {%- when 'yes' -%}
+                      {%- render 'icon', name: 'check' -%}<span class="visually-hidden">Yes</span>
+                    {%- when 'partial' -%}
+                      <span class="vs__part" aria-hidden="true"></span><span class="visually-hidden">Some do</span>
+                    {%- else -%}
+                      <span class="vs__no" aria-hidden="true"></span><span class="visually-hidden">No</span>
+                  {%- endcase -%}
+                  {%- if state_note != blank -%}
+                    <span class="vs__cellnote">{{ state_note }}</span>
+                  {%- endif -%}
+                </td>
+              {%- endfor -%}
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+
+      <p class="vs__key">
+        {%- render 'icon', name: 'check' -%} yes
+        <span class="vs__part" aria-hidden="true"></span> some do
+        <span class="vs__no" aria-hidden="true"></span> no
+      </p>
+
+      {%- if section.settings.footnote != blank -%}
+        <p class="vs__foot">{{ section.settings.footnote }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "tag": "section",
+  "class": "section-versus",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "How we compare" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pilo 1.0 vs other ergonomic pillows" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "mine_label", "label": "Our column", "default": "Pilo 1.0" },
+    { "type": "text", "id": "theirs_label", "label": "Their column", "default": "Most ergonomic pillows" },
+    { "type": "text", "id": "footnote", "label": "Footnote", "info": "Say what the comparison is based on. A dated, sourced note is what makes a table like this credible." },
+    { "type": "range", "id": "max_width", "label": "Width", "min": 600, "max": 1100, "step": 20, "unit": "px", "default": 820 },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Feature" },
+        { "type": "text", "id": "note", "label": "Detail" },
+        {
+          "type": "select",
+          "id": "mine",
+          "label": "Us",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "partial", "label": "Some do" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "yes"
+        },
+        { "type": "text", "id": "mine_note", "label": "Our note" },
+        {
+          "type": "select",
+          "id": "theirs",
+          "label": "Them",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "partial", "label": "Some do" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "partial"
+        },
+        { "type": "text", "id": "theirs_note", "label": "Their note" }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [{ "name": "Comparison table", "blocks": [{ "type": "row" }, { "type": "row" }, { "type": "row" }] }]
+}
+{% endschema %}

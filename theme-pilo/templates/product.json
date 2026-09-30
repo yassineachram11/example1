@@ -1,0 +1,65 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "eyebrow": "",
+        "show_description": true,
+        "show_qty": false,
+        "best_label": "Best value",
+        "low_at": 10,
+        "a1": "Free delivery across Lebanon, 1–5 days",
+        "a2": "Cash on delivery available",
+        "a3": "OEKO-TEX® certified fabric",
+        "show_buybar": true,
+        "buybar_label": "Add to cart"
+      }
+    },
+    "promises": {
+      "type": "usp-strip",
+      "blocks": {
+        "u1": { "type": "usp", "settings": { "icon": "truck", "title": "Free delivery", "note": "Anywhere in Lebanon" } },
+        "u2": { "type": "usp", "settings": { "icon": "cash", "title": "Cash on delivery", "note": "Pay when it arrives" } },
+        "u3": { "type": "usp", "settings": { "icon": "leaf", "title": "OEKO-TEX® certified", "note": "Tested for harmful substances" } },
+        "u4": { "type": "usp", "settings": { "icon": "chat", "title": "We answer", "note": "WhatsApp, same day" } }
+      },
+      "block_order": ["u1", "u2", "u3", "u4"],
+      "settings": { "background": "#F4F6F9" }
+    },
+    "versus": {
+      "type": "versus",
+      "blocks": {
+        "r1": { "type": "row", "settings": { "label": "Adaptive contour foam", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r2": { "type": "row", "settings": { "label": "OEKO-TEX® STANDARD 100 certified", "note": "Every component lab tested for harmful substances", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r3": { "type": "row", "settings": { "label": "Cover zips off and machine washes", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r4": { "type": "row", "settings": { "label": "Works for back and side sleepers", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r5": { "type": "row", "settings": { "label": "Free delivery across Lebanon", "note": "", "mine": "yes", "mine_note": "1–5 days", "theirs": "no", "theirs_note": "" } },
+        "r6": { "type": "row", "settings": { "label": "Cash on delivery", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r7": { "type": "row", "settings": { "label": "Bought locally, not shipped from abroad", "note": "", "mine": "yes", "mine_note": "", "theirs": "no", "theirs_note": "Often weeks by post" } }
+      },
+      "block_order": ["r1", "r2", "r3", "r4", "r5", "r6", "r7"],
+      "settings": {
+        "eyebrow": "How we compare",
+        "heading": "Pilo 1.0 vs other ergonomic pillows",
+        "text": "<p>Plenty of pillows claim ergonomic support. Here is what you actually get, and where the category is split.</p>",
+        "mine_label": "Pilo 1.0",
+        "theirs_label": "Most ergonomic pillows",
+        "footnote": "Based on pillows sold in Lebanon at a comparable price, September 2026.",
+        "max_width": 820,
+        "background": "#FFFFFF"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "What is the return policy?", "answer": "<p>For health, safety and hygiene reasons, Pilo pillows can only be returned if they are unopened, unused and in their original sealed packaging.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "When will I get my order?", "answer": "<p>We dispatch within one business day. Delivery takes one to five days depending on where you are in Lebanon.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "How much does delivery cost?", "answer": "<p>Nothing. Delivery is free anywhere in Lebanon.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "Can I pay cash?", "answer": "<p>Yes. Choose cash on delivery at checkout and pay the courier when the pillow reaches you.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"],
+      "settings": { "eyebrow": "", "heading": "Questions people ask", "open_first": false, "enable_schema": true, "background": "#FFFFFF" }
+    }
+  },
+  "order": ["main", "promises", "versus", "faq"]
+}

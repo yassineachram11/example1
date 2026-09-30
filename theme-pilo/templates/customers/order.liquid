@@ -1,0 +1,55 @@
+<section class="band band--tight">
+  <div class="wrap">
+    <h1>{{ 'customer.order.title' | t: name: order.name }}</h1>
+    <p class="form-note">{{ 'customer.order.date' | t: date: order.created_at | date: '%-d %B %Y' }}</p>
+
+    <table class="table" style="margin-top: 22px;">
+      <thead>
+        <tr>
+          <th scope="col">{{ 'customer.order.product' | t }}</th>
+          <th scope="col">{{ 'customer.order.quantity' | t }}</th>
+          <th scope="col">{{ 'customer.order.total' | t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for line in order.line_items -%}
+          <tr>
+            <td>
+              {{ line.title }}
+              {%- unless line.product.has_only_default_variant -%}
+                <span class="card__meta">{{ line.variant.title }}</span>
+              {%- endunless -%}
+            </td>
+            <td>{{ line.quantity }}</td>
+            <td>{{ line.final_line_price | money }}</td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th scope="row" colspan="2">{{ 'cart.subtotal' | t }}</th>
+          <td>{{ order.subtotal_price | money }}</td>
+        </tr>
+        <tr>
+          <th scope="row" colspan="2">{{ 'customer.order.total' | t }}</th>
+          <td>{{ order.total_price | money }}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div style="display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 28px;">
+      <div class="form-note">
+        <strong>Billing</strong>
+        {{ order.billing_address | format_address }}
+      </div>
+      <div class="form-note">
+        <strong>Shipping</strong>
+        {{ order.shipping_address | format_address }}
+      </div>
+    </div>
+
+    <p style="margin-top: 26px;">
+      <a class="btn btn--ghost" href="{{ routes.account_url }}">{{ 'customer.account.return' | t }}</a>
+    </p>
+  </div>
+</section>

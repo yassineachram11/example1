@@ -1,0 +1,188 @@
+{
+  "sections": {
+    "hero": {
+      "type": "offer-hero",
+      "settings": {
+        "eyebrow": "Sleep better tonight",
+        "heading": "The pillow that holds your neck where it should be",
+        "text": "<p>Adaptive contour memory foam, shaped for back and side sleepers. Free delivery across Lebanon, cash on delivery welcome.</p>",
+        "show_rating": false,
+        "rating_value": 5,
+        "rating_count": 0,
+        "rating_note": "",
+        "show_qty": false,
+        "best_label": "Best value",
+        "low_at": 10,
+        "a1": "Free delivery across Lebanon, 1–5 days",
+        "a2": "Cash on delivery available",
+        "a3": "OEKO-TEX® certified fabric",
+        "show_buybar": true,
+        "buybar_label": "Add to cart",
+        "background": "#FFFFFF"
+      }
+    },
+    "promises": {
+      "type": "usp-strip",
+      "blocks": {
+        "u1": { "type": "usp", "settings": { "icon": "truck", "title": "Free delivery", "note": "Anywhere in Lebanon" } },
+        "u2": { "type": "usp", "settings": { "icon": "cash", "title": "Cash on delivery", "note": "Pay when it arrives" } },
+        "u3": { "type": "usp", "settings": { "icon": "leaf", "title": "OEKO-TEX® certified", "note": "Tested for harmful substances" } },
+        "u4": { "type": "usp", "settings": { "icon": "chat", "title": "We answer", "note": "WhatsApp, same day" } }
+      },
+      "block_order": ["u1", "u2", "u3", "u4"],
+      "settings": { "background": "#F4F6F9" }
+    },
+    "problem": {
+      "type": "problem",
+      "blocks": {
+        "p1": { "type": "pain", "settings": { "title": "You wake up sore", "text": "A flat pillow lets your head drop, so your neck holds the weight all night." } },
+        "p2": { "type": "pain", "settings": { "title": "You keep flipping it", "text": "Fibre fill packs down within an hour and stops supporting anything." } },
+        "p3": { "type": "pain", "settings": { "title": "It sleeps hot", "text": "Dense foam with no airflow traps heat right under your head." } }
+      },
+      "block_order": ["p1", "p2", "p3"],
+      "settings": {
+        "eyebrow": "Sound familiar?",
+        "heading": "Most mornings start with a stiff neck",
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "background": "#FFFFFF"
+      }
+    },
+    "mechanism": {
+      "type": "mechanism",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "label": "The shape",
+            "title": "A contour, not a lump",
+            "text": "<p>A raised roll under the neck and a dip for the skull, so your spine stays in a straight line whichever side you turn to.</p>"
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "label": "The foam",
+            "title": "Holds its height all night",
+            "text": "<p>Memory foam answers to your weight and warmth, then comes back. It does not flatten out by two in the morning the way fibre fill does.</p>"
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "label": "The cover",
+            "title": "Zips off and washes",
+            "text": "<p>A breathable cooling cover that comes off in seconds and goes in the machine, so the pillow you bought stays the pillow you sleep on.</p>"
+          }
+        }
+      },
+      "block_order": ["f1", "f2", "f3"],
+      "settings": {
+        "eyebrow": "Why it works",
+        "heading": "Support where your neck actually needs it",
+        "text": "",
+        "background": "#FFFFFF"
+      }
+    },
+    "versus": {
+      "type": "versus",
+      "blocks": {
+        "r1": { "type": "row", "settings": { "label": "Adaptive contour foam", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r2": { "type": "row", "settings": { "label": "OEKO-TEX® STANDARD 100 certified", "note": "Every component lab tested for harmful substances", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r3": { "type": "row", "settings": { "label": "Cover zips off and machine washes", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r4": { "type": "row", "settings": { "label": "Works for back and side sleepers", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r5": { "type": "row", "settings": { "label": "Free delivery across Lebanon", "note": "", "mine": "yes", "mine_note": "1–5 days", "theirs": "no", "theirs_note": "" } },
+        "r6": { "type": "row", "settings": { "label": "Cash on delivery", "note": "", "mine": "yes", "mine_note": "", "theirs": "partial", "theirs_note": "" } },
+        "r7": { "type": "row", "settings": { "label": "Bought locally, not shipped from abroad", "note": "", "mine": "yes", "mine_note": "", "theirs": "no", "theirs_note": "Often weeks by post" } }
+      },
+      "block_order": ["r1", "r2", "r3", "r4", "r5", "r6", "r7"],
+      "settings": {
+        "eyebrow": "How we compare",
+        "heading": "Pilo 1.0 vs other ergonomic pillows",
+        "text": "<p>Plenty of pillows claim ergonomic support. Here is what you actually get, and where the category is split.</p>",
+        "mine_label": "Pilo 1.0",
+        "theirs_label": "Most ergonomic pillows",
+        "footnote": "Based on pillows sold in Lebanon at a comparable price, September 2026.",
+        "max_width": 820,
+        "background": "#FFFFFF"
+      }
+    },
+    "steps": {
+      "type": "steps",
+      "blocks": {
+        "s1": { "type": "step", "settings": { "title": "You order", "text": "Pick your pack and check out. Cash on delivery is fine." } },
+        "s2": { "type": "step", "settings": { "title": "We dispatch", "text": "Your pillow leaves us within one business day." } },
+        "s3": { "type": "step", "settings": { "title": "It arrives", "text": "Free delivery anywhere in Lebanon, usually in one to five days." } }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "eyebrow": "What happens next",
+        "heading": "From order to first night",
+        "text": "",
+        "background": "#F4F6F9"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "What is the return policy?",
+            "answer": "<p>For health, safety and hygiene reasons, Pilo pillows can only be returned if they are unopened, unused and in their original sealed packaging.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "When will I get my order?",
+            "answer": "<p>We dispatch within one business day. Delivery takes one to five days depending on where you are in Lebanon, and you get a message when it is on its way.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How much does delivery cost?",
+            "answer": "<p>Nothing. Delivery is free anywhere in Lebanon.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I pay cash?",
+            "answer": "<p>Yes. Choose cash on delivery at checkout and pay the courier when the pillow reaches you.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "What does OEKO-TEX® certified mean?",
+            "answer": "<p>OEKO-TEX® STANDARD 100 is an independent certification for textiles. Every component of a certified item is laboratory tested against a long list of substances known to be harmful to human health — not only the main fabric, but the threads, the zip, and any coatings or prints.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Questions people ask",
+        "open_first": false,
+        "enable_schema": true,
+        "background": "#FFFFFF"
+      }
+    },
+    "close": {
+      "type": "closing-offer",
+      "settings": {
+        "eyebrow": "",
+        "heading": "Give your neck a better night",
+        "text": "",
+        "button_label": "Choose your pack",
+        "link": "",
+        "note": "Free delivery across Lebanon. Cash on delivery available.",
+        "background": "#EAF0F7"
+      }
+    }
+  },
+  "order": ["hero", "promises", "problem", "mechanism", "versus", "steps", "faq", "close"]
+}

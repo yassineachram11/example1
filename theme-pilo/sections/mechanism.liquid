@@ -1,0 +1,88 @@
+{%- comment -%}
+  Image beside text, one block per idea, alternating sides. This is where the
+  claim in the hero gets its reason to be believed.
+{%- endcomment -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} { background: {{ section.settings.background }}; }
+{%- endstyle -%}
+
+<section class="band">
+  <div class="wrap">
+    {%- if section.settings.heading != blank -%}
+      <div class="band__head band__head--center rise">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2>{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}
+          <div class="lede rte">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="feats">
+      {%- for block in section.blocks -%}
+        <div class="feat rise{% cycle 'sides': '', ' feat--flip' %}" {{ block.shopify_attributes }}>
+          <div class="feat__media">
+            {%- if block.settings.image -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 900 }}"
+                srcset="{{ block.settings.image | image_url: width: 500 }} 500w, {{ block.settings.image | image_url: width: 900 }} 900w"
+                sizes="(min-width: 800px) 48vw, 100vw"
+                alt="{{ block.settings.image.alt | escape }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="lazy"
+              >
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+            {%- endif -%}
+          </div>
+          <div class="feat__body">
+            {%- if block.settings.label != blank -%}
+              <p class="eyebrow">{{ block.settings.label }}</p>
+            {%- endif -%}
+            <h3>{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}
+              <div class="rte">{{ block.settings.text }}</div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "How it works",
+  "tag": "section",
+  "class": "section-mechanism",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why it works" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Support where your neck actually needs it" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "text", "id": "title", "label": "Heading", "default": "A contour, not a lump" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>A raised roll under the neck and a dip for the skull, so your spine stays in a straight line whichever side you turn to.</p>" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "How it works",
+      "blocks": [{ "type": "feature" }, { "type": "feature" }]
+    }
+  ]
+}
+{% endschema %}

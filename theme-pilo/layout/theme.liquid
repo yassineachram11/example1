@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.c_brand }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 48 }}">
+    {%- endif -%}
+
+    <title>{{ page_title }}{% if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}</title>
+    {%- if page_description -%}<meta name="description" content="{{ page_description | escape }}">{%- endif -%}
+
+    {%- render 'meta-tags' -%}
+
+    {{ settings.f_body | font_face: font_display: 'swap' }}
+    {{ settings.f_head | font_face: font_display: 'swap' }}
+    {{ settings.f_body | font_modify: 'weight', '500' | font_face: font_display: 'swap' }}
+    {{ settings.f_head | font_modify: 'weight', '700' | font_face: font_display: 'swap' }}
+
+    <style>
+      :root {
+        --ink: {{ settings.c_ink }};
+        --ink-rgb: {{ settings.c_ink | color_extract: 'red' }}, {{ settings.c_ink | color_extract: 'green' }}, {{ settings.c_ink | color_extract: 'blue' }};
+        --muted: {{ settings.c_muted }};
+        --bg: {{ settings.c_bg }};
+        --bg-rgb: {{ settings.c_bg | color_extract: 'red' }}, {{ settings.c_bg | color_extract: 'green' }}, {{ settings.c_bg | color_extract: 'blue' }};
+        --surface: {{ settings.c_surface }};
+        --line: {{ settings.c_line }};
+        --brand: {{ settings.c_brand }};
+        --brand-rgb: {{ settings.c_brand | color_extract: 'red' }}, {{ settings.c_brand | color_extract: 'green' }}, {{ settings.c_brand | color_extract: 'blue' }};
+        --brand-dark: {{ settings.c_brand_dark }};
+        --brand-soft: {{ settings.c_brand_soft }};
+        --save: {{ settings.c_save }};
+        --good: {{ settings.c_good }};
+
+        --font-head: {{ settings.f_head.family }}, {{ settings.f_head.fallback_families }};
+        --font-body: {{ settings.f_body.family }}, {{ settings.f_body.fallback_families }};
+        --head-weight: {{ settings.f_head.weight }};
+        --body-weight: {{ settings.f_body.weight }};
+        --head-scale: {{ settings.f_scale | divided_by: 100.0 }};
+
+        --r-btn: {{ settings.r_btn }}px;
+        --r-card: {{ settings.r_card }}px;
+        --page: {{ settings.page_width }}px;
+        --logo-w: {{ settings.logo_w }}px;
+      }
+    </style>
+
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    <script>document.documentElement.classList.remove('no-js');</script>
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name | handle }}">
+    <a class="skip" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="main" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% section 'cart-drawer' %}
+    <div class="scrim" data-scrim hidden></div>
+  </body>
+</html>

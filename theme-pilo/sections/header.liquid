@@ -1,0 +1,106 @@
+{%- liquid
+  assign p = settings.hero_product
+  assign shop_url = routes.root_url
+  if p != blank
+    assign shop_url = p.url
+  endif
+-%}
+
+{%- if section.settings.show_bar and section.settings.bar_text != blank -%}
+  <div class="topbar" style="--bar-bg: {{ section.settings.bar_bg }}; --bar-fg: {{ section.settings.bar_fg }};">
+    <div class="topbar__in">
+      {%- if section.settings.bar_icon != 'none' -%}
+        {%- render 'icon', name: section.settings.bar_icon -%}
+      {%- endif -%}
+      <span>{{ section.settings.bar_text }}</span>
+    </div>
+  </div>
+{%- endif -%}
+
+<header class="head" data-head>
+  <div class="wrap head__in">
+    <button type="button" class="iconbtn head__burger" data-open="menu-drawer" aria-label="{{ 'sections.header.menu' | t }}">
+      {%- render 'icon', name: 'menu' -%}
+    </button>
+
+    <a class="head__logo" href="{{ routes.root_url }}">
+      {%- if settings.logo != blank -%}
+        {{ settings.logo | image_url: width: 400 | image_tag:
+             loading: 'eager', widths: '120, 240, 400',
+             style: 'width: 100%;', alt: shop.name }}
+      {%- else -%}
+        <span class="head__word">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="head__nav" aria-label="{{ 'sections.header.menu' | t }}">
+      {%- for link in section.settings.menu.links -%}
+        <a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>{{ link.title }}</a>
+      {%- endfor -%}
+    </nav>
+
+    <div class="head__side">
+      {%- if section.settings.show_cta -%}
+        <a class="btn btn--primary head__cta" href="{{ shop_url }}">{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+      <button type="button" class="iconbtn" data-open="cart-drawer" aria-label="{{ 'sections.header.cart' | t }}">
+        {%- render 'icon', name: 'cart' -%}
+        <span class="head__count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="menu-drawer" class="drawer drawer--left" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}" aria-hidden="true">
+  <div class="drawer__top">
+    <span class="drawer__title">{{ 'sections.header.menu' | t }}</span>
+    <button type="button" class="iconbtn" data-close aria-label="{{ 'accessibility.close' | t }}">
+      {%- render 'icon', name: 'close' -%}
+    </button>
+  </div>
+  <div class="drawer__body">
+    <ul class="menu-list" role="list">
+      {%- for link in section.settings.menu.links -%}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {%- endfor -%}
+    </ul>
+  </div>
+  {%- if section.settings.show_cta -%}
+    <div class="drawer__foot">
+      <a class="btn btn--primary btn--full btn--lg" href="{{ shop_url }}">{{ section.settings.cta_label }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "header", "content": "Bar above the header" },
+    { "type": "checkbox", "id": "show_bar", "label": "Show the bar", "default": true },
+    { "type": "text", "id": "bar_text", "label": "Text", "default": "Free delivery across Lebanon · pay cash on delivery" },
+    {
+      "type": "select", "id": "bar_icon", "label": "Icon",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "truck", "label": "Delivery" },
+        { "value": "cash", "label": "Cash" },
+        { "value": "shield", "label": "Guarantee" }
+      ],
+      "default": "truck"
+    },
+    { "type": "color", "id": "bar_bg", "label": "Bar background", "default": "#16212D" },
+    { "type": "color", "id": "bar_fg", "label": "Bar text", "default": "#FFFFFF" },
+    { "type": "header", "content": "Navigation" },
+    {
+      "type": "paragraph",
+      "content": "Keep this short. Every link in a header is a way out of the page that sells, and this theme only has one thing to sell."
+    },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "header", "content": "Button" },
+    { "type": "checkbox", "id": "show_cta", "label": "Show a buy button in the header", "default": true },
+    { "type": "text", "id": "cta_label", "label": "Button text", "default": "Shop Pilo" }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

@@ -1,0 +1,42 @@
+<section class="band band--tight">
+  <div class="wrap">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <h1>{{ 'customer.account.title' | t }}</h1>
+      <a href="{{ routes.account_logout_url }}">{{ 'customer.account.log_out' | t }}</a>
+    </div>
+
+    <h2 style="margin-top: 28px;">{{ 'customer.account.orders' | t }}</h2>
+
+    {%- paginate customer.orders by 20 -%}
+      {%- if customer.orders.size > 0 -%}
+        <table class="table" style="margin-top: 14px;">
+          <thead>
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Date</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%- for order in customer.orders -%}
+              <tr>
+                <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+                <td>{{ order.created_at | date: '%-d %B %Y' }}</td>
+                <td>{{ order.total_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+        {%- render 'pagination', paginate: paginate -%}
+      {%- else -%}
+        <p class="form-note" style="margin-top: 10px;">No orders yet.</p>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+    <h2 style="margin-top: 36px;">{{ 'customer.account.details' | t }}</h2>
+    <div class="form-note" style="margin-top: 10px;">
+      {{ customer.default_address | format_address }}
+      <p><a href="{{ routes.account_addresses_url }}">{{ 'customer.addresses.title' | t }}</a></p>
+    </div>
+  </div>
+</section>

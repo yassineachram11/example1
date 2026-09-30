@@ -1,0 +1,78 @@
+{%- comment -%}
+  Rendered into the layout once, and re-fetched by theme.js through
+  /?section_id=cart-drawer so the markup after an add is always the server's,
+  never guessed in JavaScript.
+{%- endcomment -%}
+<div id="cart-drawer" class="drawer" role="dialog" aria-modal="true" aria-label="{{ 'cart.title' | t }}" aria-hidden="true">
+  <div data-cart-body style="display: contents;">
+    <div class="drawer__top">
+      <span class="drawer__title">
+        {{ 'cart.title' | t }}
+        <span data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>({{ cart.item_count }})</span>
+      </span>
+      <button type="button" class="iconbtn" data-close aria-label="{{ 'accessibility.close' | t }}">
+        {%- render 'icon', name: 'close' -%}
+      </button>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="drawer__body cart-empty">
+        {%- render 'icon', name: 'bag-empty' -%}
+        <h3>{{ 'cart.empty' | t }}</h3>
+        <p class="lede">{{ 'cart.empty_text' | t }}</p>
+        <button type="button" class="btn btn--ghost" data-close>{{ 'general.continue_shopping' | t }}</button>
+      </div>
+    {%- else -%}
+      <div class="drawer__body">
+        <p class="cart-error" data-cart-error hidden></p>
+        <ul class="cart-lines" role="list">
+          {%- for item in cart.items -%}
+            <li class="cart-line">
+              {%- if item.image -%}
+                <a href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                  {{ item.image | image_url: width: 160 | image_tag: loading: 'lazy', class: 'cart-line__img', alt: '' }}
+                </a>
+              {%- endif -%}
+              <div class="cart-line__body">
+                <a class="cart-line__name" href="{{ item.url }}">{{ item.product.title }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <div class="cart-line__variant">{{ item.variant.title }}</div>
+                {%- endunless -%}
+                <div class="cart-line__cost">{{ item.final_line_price | money }}</div>
+
+                <div class="cart-line__foot">
+                  <div class="qty qty--sm">
+                    <button type="button" data-line-step data-line="{{ forloop.index }}" data-to="{{ item.quantity | minus: 1 }}" aria-label="{{ 'cart.decrease' | t }}">&minus;</button>
+                    <input type="number" value="{{ item.quantity }}" min="0" readonly tabindex="-1" aria-label="{{ 'cart.quantity' | t }}">
+                    <button type="button" data-line-step data-line="{{ forloop.index }}" data-to="{{ item.quantity | plus: 1 }}" aria-label="{{ 'cart.increase' | t }}">+</button>
+                  </div>
+                  <button type="button" class="cart-line__remove" data-line-step data-line="{{ forloop.index }}" data-to="0">
+                    {{ 'cart.remove' | t }}
+                  </button>
+                </div>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div class="drawer__foot">
+        <div class="cart-sum">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+        <form action="{{ routes.cart_url }}" method="post">
+          <button type="submit" name="checkout" class="btn btn--primary btn--full btn--lg">
+            {%- render 'icon', name: 'lock' -%}
+            {{ 'cart.checkout' | t }}
+          </button>
+        </form>
+        <p class="cart-note">{{ 'cart.taxes_note' | t }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Cart drawer", "settings": [] }
+{% endschema %}

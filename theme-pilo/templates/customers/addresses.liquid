@@ -1,0 +1,73 @@
+<section class="band band--tight">
+  <div class="wrap">
+    <h1>{{ 'customer.addresses.title' | t }}</h1>
+
+    {%- paginate customer.addresses by 10 -%}
+      <div style="display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 22px;">
+        {%- for address in customer.addresses -%}
+          <div class="pain">
+            {%- if address == customer.default_address -%}
+              <p class="eyebrow">{{ 'customer.addresses.default' | t }}</p>
+            {%- endif -%}
+            <div class="form-note">{{ address | format_address }}</div>
+            {%- form 'customer_address', address -%}
+              <button type="submit" name="_method" value="delete" class="cart-line__remove">
+                {{ 'customer.addresses.delete' | t }}
+              </button>
+            {%- endform -%}
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+
+    <h2 style="margin-top: 36px;">{{ 'customer.addresses.add' | t }}</h2>
+    {%- form 'customer_address', customer.new_address -%}
+      {{ form.errors | default_errors }}
+      <div style="max-width: 460px; margin-top: 16px;">
+        <div class="field">
+          <label for="a-first">{{ 'customer.register.first_name' | t }}</label>
+          <input type="text" name="address[first_name]" id="a-first" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="a-last">{{ 'customer.register.last_name' | t }}</label>
+          <input type="text" name="address[last_name]" id="a-last" autocomplete="family-name">
+        </div>
+        <div class="field">
+          <label for="a-address1">Address</label>
+          <input type="text" name="address[address1]" id="a-address1" autocomplete="address-line1">
+        </div>
+        <div class="field">
+          <label for="a-address2">Apartment, floor</label>
+          <input type="text" name="address[address2]" id="a-address2" autocomplete="address-line2">
+        </div>
+        <div class="field">
+          <label for="a-city">City</label>
+          <input type="text" name="address[city]" id="a-city" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label for="a-country">Country</label>
+          <select name="address[country]" id="a-country" data-default="{{ form.country }}">
+            {{ country_option_tags }}
+          </select>
+        </div>
+        <div class="field">
+          <label for="a-phone">Phone</label>
+          <input type="tel" name="address[phone]" id="a-phone" autocomplete="tel">
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">{{ 'customer.addresses.add' | t }}</button>
+      </div>
+    {%- endform -%}
+
+    <p style="margin-top: 26px;">
+      <a class="btn btn--ghost" href="{{ routes.account_url }}">{{ 'customer.account.return' | t }}</a>
+    </p>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var sel = document.getElementById('a-country');
+    if (sel && sel.dataset.default) sel.value = sel.dataset.default;
+  })();
+</script>

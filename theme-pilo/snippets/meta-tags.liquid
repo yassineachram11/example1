@@ -1,0 +1,21 @@
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ page_title | default: shop.name | escape }}">
+<meta property="og:type" content="{% if request.page_type == 'product' %}product{% else %}website{% endif %}">
+<meta property="og:description" content="{{ page_description | default: shop.description | default: shop.name | escape }}">
+
+{%- assign share_image = null -%}
+{%- if request.page_type == 'product' and product.featured_media -%}
+  {%- assign share_image = product.featured_media.preview_image -%}
+{%- elsif settings.hero_product != blank and settings.hero_product.featured_media -%}
+  {%- assign share_image = settings.hero_product.featured_media.preview_image -%}
+{%- endif -%}
+
+{%- if share_image -%}
+  <meta property="og:image" content="http:{{ share_image | image_url: width: 1200 }}">
+  <meta property="og:image:width" content="1200">
+  <meta name="twitter:card" content="summary_large_image">
+{%- endif -%}
+
+<meta name="twitter:title" content="{{ page_title | escape }}">
+<meta name="twitter:description" content="{{ page_description | default: shop.description | default: shop.name | escape }}">

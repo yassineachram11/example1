@@ -1,0 +1,49 @@
+<section class="band band--tight">
+  <div class="wrap" style="max-width: 460px;">
+    <h1>{{ 'customer.login.title' | t }}</h1>
+
+    <div id="recover" style="display: none; margin-top: 20px;">
+      {%- form 'recover_customer_password' -%}
+        <h2>{{ 'customer.recover.title' | t }}</h2>
+        <p class="form-note" style="margin: 8px 0 16px;">{{ 'customer.recover.subtext' | t }}</p>
+        {%- if form.posted_successfully? -%}
+          <p class="form-note">{{ 'customer.recover.success' | t }}</p>
+        {%- endif -%}
+        <div class="field">
+          <label for="recover-email">{{ 'customer.login.email' | t }}</label>
+          <input type="email" name="email" id="recover-email" autocomplete="email">
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">{{ 'customer.recover.submit' | t }}</button>
+        <p style="margin-top: 14px;">
+          <a href="#login" onclick="document.getElementById('recover').style.display='none';document.getElementById('login').style.display='block';return false;">
+            {{ 'customer.login.cancel' | t }}
+          </a>
+        </p>
+      {%- endform -%}
+    </div>
+
+    <div id="login" style="margin-top: 20px;">
+      {%- form 'customer_login' -%}
+        {{ form.errors | default_errors }}
+        <div class="field">
+          <label for="login-email">{{ 'customer.login.email' | t }}</label>
+          <input type="email" name="customer[email]" id="login-email" autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="login-password">{{ 'customer.login.password' | t }}</label>
+          <input type="password" name="customer[password]" id="login-password" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn--primary btn--full">{{ 'customer.login.submit' | t }}</button>
+        <p style="margin-top: 14px;">
+          <a href="#recover" onclick="document.getElementById('login').style.display='none';document.getElementById('recover').style.display='block';return false;">
+            {{ 'customer.login.forgot' | t }}
+          </a>
+        </p>
+      {%- endform -%}
+
+      <p class="form-note" style="margin-top: 20px;">
+        <a href="{{ routes.account_register_url }}">{{ 'customer.login.create' | t }}</a>
+      </p>
+    </div>
+  </div>
+</section>

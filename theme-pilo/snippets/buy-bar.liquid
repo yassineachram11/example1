@@ -1,0 +1,41 @@
+{%- comment -%}
+  The sticky bar. It carries no form of its own: theme.js submits the real buy
+  box, so there is only ever one source of truth for the selected pack.
+
+  Accepts:
+    product - the product being sold
+    label   - button text
+{%- endcomment -%}
+
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign img = product.featured_image
+-%}
+
+<div class="buybar" data-buybar aria-hidden="true">
+  <div class="buybar__in">
+    {%- if img -%}
+      <img
+        class="buybar__thumb"
+        src="{{ img | image_url: width: 120 }}"
+        alt=""
+        width="42"
+        height="42"
+        loading="lazy"
+      >
+    {%- endif -%}
+
+    <div class="buybar__info">
+      <div class="buybar__name">{{ product.title }}</div>
+      <div class="buybar__cost" data-now>{{ v.price | money }}</div>
+    </div>
+
+    <button type="button" class="btn btn--primary" data-buybar-add {% unless v.available %}disabled{% endunless %}>
+      {%- if v.available -%}
+        {{ label | default: 'Add to cart' }}
+      {%- else -%}
+        {{ 'products.product.sold_out' | t }}
+      {%- endif -%}
+    </button>
+  </div>
+</div>

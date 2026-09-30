@@ -1,0 +1,68 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Pilo Direct",
+    "theme_version": "1.0.0",
+    "theme_author": "Pilo Shop",
+    "theme_documentation_url": "https://piloshop.com",
+    "theme_support_url": "https://piloshop.com"
+  },
+  {
+    "name": "The product",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "This theme sells one product. Point it here once and every buy button, price and stock line on the site follows."
+      },
+      { "type": "product", "id": "hero_product", "label": "Product" }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "c_ink", "label": "Text", "default": "#16212D" },
+      { "type": "color", "id": "c_muted", "label": "Secondary text", "default": "#5C6B7D" },
+      { "type": "color", "id": "c_bg", "label": "Page", "default": "#FFFFFF" },
+      { "type": "color", "id": "c_surface", "label": "Panels", "default": "#F4F6F9" },
+      { "type": "color", "id": "c_line", "label": "Lines", "default": "#DDE3EB" },
+      { "type": "color", "id": "c_brand", "label": "Brand", "default": "#35608F" },
+      { "type": "color", "id": "c_brand_dark", "label": "Brand, pressed", "default": "#2A4C72" },
+      { "type": "color", "id": "c_brand_soft", "label": "Brand tint", "default": "#EAF0F7" },
+      { "type": "color", "id": "c_save", "label": "Savings", "default": "#B4530A" },
+      { "type": "color", "id": "c_good", "label": "In stock", "default": "#1C6B54" }
+    ]
+  },
+  {
+    "name": "Type",
+    "settings": [
+      { "type": "font_picker", "id": "f_head", "label": "Headings", "default": "assistant_n6" },
+      { "type": "font_picker", "id": "f_body", "label": "Body", "default": "cabin_n4" },
+      { "type": "range", "id": "f_scale", "label": "Heading scale", "min": 90, "max": 120, "step": 5, "unit": "%", "default": 100 }
+    ]
+  },
+  {
+    "name": "Shape",
+    "settings": [
+      { "type": "range", "id": "r_btn", "label": "Button radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 10 },
+      { "type": "range", "id": "r_card", "label": "Panel radius", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 14 },
+      { "type": "range", "id": "page_width", "label": "Page width", "min": 1000, "max": 1400, "step": 20, "unit": "px", "default": 1180 }
+    ]
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "range", "id": "logo_w", "label": "Logo width", "min": 80, "max": 220, "step": 5, "unit": "px", "default": 120 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" },
+      { "type": "text", "id": "wa_number", "label": "WhatsApp number", "info": "Digits only, with country code. Adds a Message us link in the footer and the help row." }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "url", "id": "s_instagram", "label": "Instagram" },
+      { "type": "url", "id": "s_tiktok", "label": "TikTok" },
+      { "type": "url", "id": "s_facebook", "label": "Facebook" }
+    ]
+  }
+]

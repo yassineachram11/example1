@@ -1,0 +1,21 @@
+{
+  "current": {
+    "c_ink": "#16212D",
+    "c_muted": "#5C6B7D",
+    "c_bg": "#FFFFFF",
+    "c_surface": "#F4F6F9",
+    "c_line": "#DDE3EB",
+    "c_brand": "#35608F",
+    "c_brand_dark": "#2A4C72",
+    "c_brand_soft": "#EAF0F7",
+    "c_save": "#B4530A",
+    "c_good": "#1C6B54",
+    "f_head": "assistant_n6",
+    "f_body": "cabin_n4",
+    "f_scale": 100,
+    "r_btn": 10,
+    "r_card": 14,
+    "page_width": 1180,
+    "logo_w": 120
+  }
+}

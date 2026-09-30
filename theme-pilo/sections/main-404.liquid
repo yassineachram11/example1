@@ -1,0 +1,21 @@
+<section class="band">
+  <div class="wrap wrap--narrow" style="text-align: center;">
+    <p class="eyebrow">404</p>
+    <h1>{{ section.settings.heading }}</h1>
+    <p class="lede" style="margin: 12px auto 24px;">{{ section.settings.text }}</p>
+    <a class="btn btn--primary btn--lg" href="{{ routes.root_url }}">{{ section.settings.button_label }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "tag": "section",
+  "class": "section-main-404",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "That page has moved on" },
+    { "type": "text", "id": "text", "label": "Text", "default": "The link you followed does not lead anywhere any more." },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Back to the shop" }
+  ]
+}
+{% endschema %}

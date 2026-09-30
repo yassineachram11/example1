@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-404",
+      "settings": {
+        "heading": "That page has moved on",
+        "text": "The link you followed does not lead anywhere any more.",
+        "button_label": "Back to the shop"
+      }
+    }
+  },
+  "order": ["main"]
+}

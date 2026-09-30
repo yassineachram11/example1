@@ -1,0 +1,59 @@
+<section class="band band--tight">
+  <div class="wrap wrap--narrow">
+    <h1>{{ 'cart.title' | t }}</h1>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-empty" style="min-height: 240px;">
+        {%- render 'icon', name: 'bag-empty' -%}
+        <p>{{ 'cart.empty_text' | t }}</p>
+        <a class="btn btn--primary" href="{{ routes.all_products_collection_url }}">
+          {{ 'general.continue_shopping' | t }}
+        </a>
+      </div>
+    {%- else -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate style="margin-top: 24px;">
+        <ul class="cart-lines" role="list">
+          {%- for line in cart.items -%}
+            <li class="cart-line">
+              {%- if line.image -%}
+                <img class="cart-line__img" src="{{ line.image | image_url: width: 180 }}" alt="{{ line.image.alt | escape }}" width="74" height="74" loading="lazy">
+              {%- endif -%}
+              <div class="cart-line__body">
+                <a class="cart-line__name" href="{{ line.url }}">{{ line.product.title }}</a>
+                {%- unless line.product.has_only_default_variant -%}
+                  <div class="cart-line__variant">{{ line.variant.title }}</div>
+                {%- endunless -%}
+                <div class="cart-line__cost">{{ line.final_line_price | money }}</div>
+                <div class="cart-line__foot">
+                  <div class="qty qty--sm">
+                    <button type="button" data-line-step data-line="{{ forloop.index }}" data-to="{{ line.quantity | minus: 1 }}" aria-label="{{ 'cart.decrease' | t }}">&minus;</button>
+                    <input type="number" name="updates[]" value="{{ line.quantity }}" min="0" aria-label="{{ 'cart.quantity' | t }}">
+                    <button type="button" data-line-step data-line="{{ forloop.index }}" data-to="{{ line.quantity | plus: 1 }}" aria-label="{{ 'cart.increase' | t }}">+</button>
+                  </div>
+                  <button type="button" class="cart-line__remove" data-line-step data-line="{{ forloop.index }}" data-to="0">
+                    {{ 'cart.remove' | t }}
+                  </button>
+                </div>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <div style="margin-top: 28px; border-top: 1px solid var(--line); padding-top: 20px;">
+          <div class="cart-sum">
+            <span>{{ 'cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          <button type="submit" name="checkout" class="btn btn--primary btn--lg btn--full">
+            {{ 'cart.checkout' | t }}
+          </button>
+          <p class="cart-note">{{ 'cart.taxes_note' | t }}</p>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Cart", "tag": "section", "class": "section-main-cart", "settings": [] }
+{% endschema %}

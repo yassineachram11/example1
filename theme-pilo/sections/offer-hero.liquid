@@ -1,0 +1,161 @@
+{%- comment -%}
+  The homepage is the sales page. This section puts the price, the packs and
+  the add-to-cart button above the fold, so a first-time visitor never has to
+  find a second page to buy from.
+{%- endcomment -%}
+
+{%- liquid
+  assign product = section.settings.product | default: settings.hero_product
+  assign heading = section.settings.heading | default: product.title
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} { background: {{ section.settings.background }}; }
+{%- endstyle -%}
+
+<section class="hero band band--tight">
+  <div class="wrap hero__grid">
+    {%- comment -%}
+      The headline is its own grid child so that on a phone it can sit above
+      the photo. A visitor should read what this is before they scroll past a
+      square image to find the price.
+    {%- endcomment -%}
+    <div class="hero__lead">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+
+      <h1 class="hero__title">{{ heading }}</h1>
+
+      {%- if section.settings.show_rating and section.settings.rating_count > 0 -%}
+        {%- liquid
+          assign whole = section.settings.rating_value | floor
+        -%}
+        <div class="stars" role="img" aria-label="{{ section.settings.rating_value }} out of 5">
+          {%- for i in (1..5) -%}
+            <span class="stars__s{% if forloop.index <= whole %} is-on{% endif %}">
+              {%- render 'icon', name: 'star' -%}
+            </span>
+          {%- endfor -%}
+          <span class="stars__n">{{ section.settings.rating_note }}</span>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__media">
+      {%- if product != blank -%}
+        {%- render 'gallery', product: product, priority: true -%}
+      {%- else -%}
+        <div class="gallery">
+          <div class="gallery__frame gallery__frame--empty">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__sell">
+      {%- if section.settings.text != blank -%}
+        <div class="hero__text rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+
+      {%- if product != blank -%}
+        {%- render 'buy-box',
+          product: product,
+          anchor: true,
+          show_qty: section.settings.show_qty,
+          low_at: section.settings.low_at,
+          best_label: section.settings.best_label,
+          a1: section.settings.a1,
+          a2: section.settings.a2,
+          a3: section.settings.a3
+        -%}
+      {%- else -%}
+        <p class="hero__setup">
+          {{ 'onboarding.no_content' | t }}
+          Pick the product this theme sells in Theme settings → Product.
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- if product != blank and section.settings.show_buybar -%}
+  {%- render 'buy-bar', product: product, label: section.settings.buybar_label -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Offer hero",
+  "tag": "section",
+  "class": "section-offer-hero",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Everything a first-time visitor needs to decide: the pillow, the price, the packs and the button. Leave the product empty to use the one set in Theme settings."
+    },
+    { "type": "product", "id": "product", "label": "Product" },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Sleep better tonight"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "One sentence on what it does for them, not what it is. Empty falls back to the product title.",
+      "default": "The pillow that holds your neck where it should be"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Supporting line",
+      "default": "<p>Adaptive contour memory foam, shaped for back and side sleepers. Free delivery across Lebanon, cash on delivery welcome.</p>"
+    },
+    { "type": "header", "content": "Rating" },
+    { "type": "checkbox", "id": "show_rating", "label": "Show a rating", "default": false },
+    {
+      "type": "range",
+      "id": "rating_value",
+      "label": "Stars",
+      "min": 1,
+      "max": 5,
+      "step": 0.5,
+      "default": 5
+    },
+    {
+      "type": "number",
+      "id": "rating_count",
+      "label": "Number of reviews",
+      "info": "Set to 0 to hide the rating. Only ever put a real count here.",
+      "default": 0
+    },
+    { "type": "text", "id": "rating_note", "label": "Text beside the stars", "default": "from 0 reviews" },
+    { "type": "header", "content": "Offer" },
+    { "type": "checkbox", "id": "show_qty", "label": "Show a quantity stepper", "default": false, "info": "Off is usually better: the packs already do this job, and one less control means one less decision." },
+    { "type": "text", "id": "best_label", "label": "Flag on the best-value pack", "default": "Best value" },
+    {
+      "type": "number",
+      "id": "low_at",
+      "label": "Call it low stock at or below",
+      "default": 10
+    },
+    { "type": "text", "id": "a1", "label": "Reassurance 1", "default": "Free delivery across Lebanon" },
+    { "type": "text", "id": "a2", "label": "Reassurance 2", "default": "Cash on delivery available" },
+    { "type": "text", "id": "a3", "label": "Reassurance 3", "default": "OEKO-TEX certified fabric" },
+    { "type": "header", "content": "Sticky bar" },
+    {
+      "type": "checkbox",
+      "id": "show_buybar",
+      "label": "Show a sticky buy bar once the button scrolls away",
+      "default": true
+    },
+    { "type": "text", "id": "buybar_label", "label": "Sticky bar button", "default": "Add to cart" },
+    { "type": "header", "content": "Appearance" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" }
+  ],
+  "presets": [{ "name": "Offer hero" }]
+}
+{% endschema %}

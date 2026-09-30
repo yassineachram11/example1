@@ -1,0 +1,28 @@
+<section class="band band--tight">
+  <div class="wrap">
+    <h1>{{ blog.title }}</h1>
+
+    {%- paginate blog.articles by 12 -%}
+      <div class="grid-cards" style="margin-top: 28px;">
+        {%- for article in blog.articles -%}
+          <a class="card" href="{{ article.url }}">
+            {%- if article.image -%}
+              <div class="card__media">
+                <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape }}" width="300" height="300" loading="lazy">
+              </div>
+            {%- endif -%}
+            <div class="card__body">
+              <span class="card__name">{{ article.title }}</span>
+              <span class="card__meta">{{ article.published_at | date: '%-d %B %Y' }}</span>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Blog", "tag": "section", "class": "section-main-blog", "settings": [] }
+{% endschema %}

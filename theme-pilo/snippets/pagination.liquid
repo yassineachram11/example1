@@ -1,0 +1,11 @@
+{%- if paginate.pages > 1 -%}
+  <nav class="pager" role="navigation" aria-label="Pagination">
+    {%- if paginate.previous -%}
+      <a class="btn btn--ghost" href="{{ paginate.previous.url }}">{{ 'general.pagination.previous' | t }}</a>
+    {%- endif -%}
+    <span class="pager__at">{{ 'general.meta.page' | t: page: paginate.current_page }} / {{ paginate.pages }}</span>
+    {%- if paginate.next -%}
+      <a class="btn btn--ghost" href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t }}</a>
+    {%- endif -%}
+  </nav>
+{%- endif -%}

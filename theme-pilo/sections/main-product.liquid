@@ -1,0 +1,66 @@
+{%- comment -%}
+  The product page. Deliberately the same offer component as the homepage, so
+  a visitor who lands here from search sees the identical price and packs.
+{%- endcomment -%}
+
+<section class="band band--tight">
+  <div class="wrap hero__grid">
+    <div class="hero__lead">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h1 class="hero__title">{{ product.title }}</h1>
+    </div>
+
+    <div class="hero__media">
+      {%- render 'gallery', product: product, priority: true -%}
+    </div>
+
+    <div class="hero__sell">
+      {%- render 'buy-box',
+        product: product,
+        anchor: true,
+        show_qty: section.settings.show_qty,
+        low_at: section.settings.low_at,
+        best_label: section.settings.best_label,
+        a1: section.settings.a1,
+        a2: section.settings.a2,
+        a3: section.settings.a3
+      -%}
+
+      {%- if section.settings.show_description and product.description != blank -%}
+        <div class="prose rte">{{ product.description }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- if section.settings.show_buybar -%}
+  {%- render 'buy-bar', product: product, label: section.settings.buybar_label -%}
+{%- endif -%}
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "class": "section-main-product",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "checkbox", "id": "show_description", "label": "Show the product description", "default": true },
+    { "type": "header", "content": "Offer" },
+    { "type": "checkbox", "id": "show_qty", "label": "Show a quantity stepper", "default": false },
+    { "type": "text", "id": "best_label", "label": "Flag on the best-value pack", "default": "Best value" },
+    { "type": "number", "id": "low_at", "label": "Call it low stock at or below", "default": 10 },
+    { "type": "text", "id": "a1", "label": "Reassurance 1", "default": "Free delivery across Lebanon" },
+    { "type": "text", "id": "a2", "label": "Reassurance 2", "default": "Cash on delivery available" },
+    { "type": "text", "id": "a3", "label": "Reassurance 3", "default": "OEKO-TEX certified fabric" },
+    { "type": "header", "content": "Sticky bar" },
+    { "type": "checkbox", "id": "show_buybar", "label": "Show a sticky buy bar once the button scrolls away", "default": true },
+    { "type": "text", "id": "buybar_label", "label": "Sticky bar button", "default": "Add to cart" }
+  ]
+}
+{% endschema %}

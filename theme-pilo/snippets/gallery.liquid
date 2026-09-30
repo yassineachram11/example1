@@ -1,0 +1,59 @@
+{%- comment -%}
+  Product images. One large frame plus thumbs; thumbs swap the frame's source
+  rather than scrolling a carousel, which keeps the buy box beside it still.
+
+  Accepts:
+    product  - the product whose media to show
+    priority - true on the first gallery in the document, so its main image
+               is eagerly loaded and flagged to the browser as the LCP
+{%- endcomment -%}
+
+{%- liquid
+  assign images = product.images
+  assign lead = product.featured_image
+-%}
+
+{%- if lead -%}
+  <div class="gallery" data-gallery>
+    <div class="gallery__frame">
+      <img
+        data-main-image
+        src="{{ lead | image_url: width: 1200 }}"
+        srcset="{{ lead | image_url: width: 600 }} 600w, {{ lead | image_url: width: 900 }} 900w, {{ lead | image_url: width: 1200 }} 1200w"
+        sizes="(min-width: 950px) 46vw, 100vw"
+        alt="{{ lead.alt | escape | default: product.title | escape }}"
+        width="{{ lead.width }}"
+        height="{{ lead.height }}"
+        {% if priority %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %}
+      >
+    </div>
+
+    {%- if images.size > 1 -%}
+      <div class="gallery__thumbs">
+        {%- for image in images limit: 8 -%}
+          <button
+            type="button"
+            class="gallery__thumb{% if image.id == lead.id %} is-on{% endif %}"
+            data-thumb
+            aria-label="{{ 'products.product.view_image' | t: index: forloop.index }}"
+          >
+            <img
+              src="{{ image | image_url: width: 200 }}"
+              data-full="{{ image | image_url: width: 1200 }}"
+              alt="{{ image.alt | escape | default: product.title | escape }}"
+              width="80"
+              height="80"
+              loading="lazy"
+            >
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+{%- else -%}
+  <div class="gallery">
+    <div class="gallery__frame gallery__frame--empty">
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+    </div>
+  </div>
+{%- endif -%}

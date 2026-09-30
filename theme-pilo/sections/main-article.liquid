@@ -1,0 +1,25 @@
+<article class="band band--tight">
+  <div class="wrap wrap--narrow">
+    <h1>{{ article.title }}</h1>
+    <p class="card__meta" style="margin-top: 8px;">{{ article.published_at | date: '%-d %B %Y' }}</p>
+
+    {%- if article.image -%}
+      <img
+        style="width: 100%; height: auto; border-radius: var(--r-card); margin-top: 22px;"
+        src="{{ article.image | image_url: width: 1200 }}"
+        alt="{{ article.image.alt | escape }}"
+        width="{{ article.image.width }}" height="{{ article.image.height }}"
+      >
+    {%- endif -%}
+
+    <div class="rte" style="margin-top: 24px;">{{ article.content }}</div>
+
+    <p style="margin-top: 28px;">
+      <a class="btn btn--ghost" href="{{ blog.url }}">{{ 'blogs.article.back' | t }}</a>
+    </p>
+  </div>
+</article>
+
+{% schema %}
+{ "name": "Article", "tag": "section", "class": "section-main-article", "settings": [] }
+{% endschema %}

@@ -1,0 +1,112 @@
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__grid">
+      <div class="foot__brand">
+        {%- if settings.logo != blank -%}
+          <a href="{{ routes.root_url }}" class="foot__logo">
+            {{ settings.logo | image_url: width: 300 | image_tag: loading: 'lazy', alt: shop.name }}
+          </a>
+        {%- else -%}
+          <a href="{{ routes.root_url }}" class="foot__word">{{ shop.name }}</a>
+        {%- endif -%}
+        {%- if section.settings.blurb != blank -%}
+          <p class="foot__blurb">{{ section.settings.blurb }}</p>
+        {%- endif -%}
+
+        {%- assign has_social = false -%}
+        {%- if settings.s_instagram != blank or settings.s_tiktok != blank or settings.s_facebook != blank -%}
+          {%- assign has_social = true -%}
+        {%- endif -%}
+        {%- if has_social -%}
+          <ul class="foot__social" role="list">
+            {%- if settings.s_instagram != blank -%}
+              <li><a href="{{ settings.s_instagram }}" target="_blank" rel="noopener" aria-label="Instagram">{%- render 'icon', name: 'instagram' -%}</a></li>
+            {%- endif -%}
+            {%- if settings.s_tiktok != blank -%}
+              <li><a href="{{ settings.s_tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">{%- render 'icon', name: 'tiktok' -%}</a></li>
+            {%- endif -%}
+            {%- if settings.s_facebook != blank -%}
+              <li><a href="{{ settings.s_facebook }}" target="_blank" rel="noopener" aria-label="Facebook">{%- render 'icon', name: 'facebook' -%}</a></li>
+            {%- endif -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'links' and block.settings.menu != blank -%}
+          <nav class="foot__col" {{ block.shopify_attributes }} aria-label="{{ block.settings.title }}">
+            {%- if block.settings.title != blank -%}<h3 class="foot__h">{{ block.settings.title }}</h3>{%- endif -%}
+            <ul role="list">
+              {%- for link in block.settings.menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- elsif block.type == 'contact' -%}
+          <div class="foot__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.title != blank -%}<h3 class="foot__h">{{ block.settings.title }}</h3>{%- endif -%}
+            <ul role="list">
+              {%- if shop.email != blank -%}
+                <li><a href="mailto:{{ shop.email }}">{{ shop.email }}</a></li>
+              {%- endif -%}
+              {%- if settings.wa_number != blank -%}
+                {%- assign wa = settings.wa_number | remove: ' ' | remove: '+' | remove: '-' -%}
+                <li>
+                  <a href="https://wa.me/{{ wa }}" target="_blank" rel="noopener" class="foot__wa">
+                    {%- render 'icon', name: 'chat' -%}
+                    {{ block.settings.wa_label | default: 'Message us on WhatsApp' }}
+                  </a>
+                </li>
+              {%- endif -%}
+              {%- if block.settings.note != blank -%}
+                <li class="foot__note">{{ block.settings.note }}</li>
+              {%- endif -%}
+            </ul>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="foot__base">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</p>
+      <ul class="foot__legal" role="list">
+        {%- for policy in shop.policies -%}
+          {%- if policy != blank -%}
+            <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "text", "id": "blurb", "label": "Line under the logo", "default": "One pillow, engineered for your neck. Made for Lebanon." }
+  ],
+  "blocks": [
+    {
+      "type": "links",
+      "name": "Link list",
+      "limit": 2,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "Talk to us" },
+        { "type": "text", "id": "wa_label", "label": "WhatsApp link text", "default": "Message us on WhatsApp" },
+        { "type": "text", "id": "note", "label": "Small note", "default": "We answer every day of the week." }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

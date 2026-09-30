@@ -1,0 +1,195 @@
+{%- comment -%}
+  The offer. Rendered by the homepage hero and by the product page, so the
+  price, the packs and the add-to-cart behave identically in both places.
+
+  Accepts:
+    product      - the product to sell
+    show_qty     - show a quantity stepper
+    anchor       - true on the copy the sticky bar watches (only ever one)
+    low_at       - call it low stock at or below this many units
+    best_label   - flag shown on the cheapest per-unit pack
+    a1, a2, a3   - reassurance lines under the button
+{%- endcomment -%}
+
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+
+  comment
+    Baseline is the dearest per-unit price on offer, i.e. the single. Savings
+    are measured against buying that many singles, never against compare-at,
+    which is the number merchants most often leave wrong.
+  endcomment
+  assign baseline = 0
+  assign best_per = 0
+  assign best_id = 0
+  for row in product.variants
+    assign u = row.title | split: 'x' | first | times: 1
+    if u < 1
+      assign u = 1
+    endif
+    assign per = row.price | divided_by: u
+    if per > baseline
+      assign baseline = per
+    endif
+    if best_per == 0 or per < best_per
+      assign best_per = per
+      assign best_id = row.id
+    endif
+  endfor
+-%}
+
+<div class="offer"{% if anchor %} id="buy"{% endif %} data-offer>
+  {%- liquid
+    assign sel_units = v.title | split: 'x' | first | times: 1
+    if sel_units < 1
+      assign sel_units = 1
+    endif
+    assign sel_full = baseline | times: sel_units
+    assign sel_save = sel_full | minus: v.price
+  -%}
+
+  <div class="offer__price">
+    <span class="offer__now" data-now>{{ v.price | money }}</span>
+    <s class="offer__was" data-was {% if sel_save <= 0 %}hidden{% endif %}>
+      {%- if sel_save > 0 %}{{ sel_full | money }}{% endif -%}
+    </s>
+    <span class="offer__off" data-off {% if sel_save <= 0 %}hidden{% endif %}>
+      {%- if sel_save > 0 -%}
+        {{ 'products.product.save_amount' | t: amount: sel_save | money }}
+      {%- endif -%}
+    </span>
+  </div>
+
+  {%- liquid
+    assign count = v.inventory_quantity
+    if v.available == false
+      assign st = 'out'
+      assign st_text = 'products.product.out_of_stock' | t
+    elsif v.inventory_management == blank
+      assign st = 'in'
+      assign st_text = 'products.product.in_stock' | t
+    elsif count > 0 and count <= low_at
+      assign st = 'low'
+      assign st_text = 'products.product.low_stock' | t: count: count
+    else
+      assign st = 'in'
+      assign st_text = 'products.product.in_stock' | t
+    endif
+  -%}
+  <p class="stock stock--{{ st }}" data-stock>
+    <span class="stock__dot" aria-hidden="true"></span>
+    <span data-stock-text>{{ st_text }}</span>
+  </p>
+
+  {%- form 'product', product, data-buy-form: true -%}
+    <input type="hidden" name="id" value="{{ v.id }}" data-variant-id>
+
+    {%- unless product.has_only_default_variant -%}
+      <div class="packs" data-packs>
+        {%- for row in product.variants -%}
+          {%- liquid
+            assign units = row.title | split: 'x' | first | times: 1
+            if units < 1
+              assign units = 1
+            endif
+            assign each = row.price | divided_by: units
+            assign full = baseline | times: units
+            assign save = full | minus: row.price
+
+            assign pct = 0
+            if save > 0 and full > 0
+              assign pct = save | times: 100 | divided_by: full
+            endif
+
+            assign each_money = each | money
+            assign save_money = save | money
+
+            assign rc = row.inventory_quantity
+            if row.available == false
+              assign row_st = 'out'
+              assign row_txt = 'products.product.out_of_stock' | t
+            elsif row.inventory_management == blank
+              assign row_st = 'in'
+              assign row_txt = 'products.product.in_stock' | t
+            elsif rc > 0 and rc <= low_at
+              assign row_st = 'low'
+              assign row_txt = 'products.product.low_stock' | t: count: rc
+            else
+              assign row_st = 'in'
+              assign row_txt = 'products.product.in_stock' | t
+            endif
+          -%}
+          <label class="pack{% if row.id == v.id %} is-on{% endif %}{% unless row.available %} is-off{% endunless %}">
+            {%- if row.id == best_id and save > 0 -%}
+              <span class="pack__flag">{{ best_label | default: 'Best value' }}</span>
+            {%- endif -%}
+            <input
+              type="radio"
+              name="pack"
+              value="{{ row.id }}"
+              data-price="{{ row.price | money }}"
+              data-compare="{% if save > 0 %}{{ full | money }}{% endif %}"
+              data-off="{% if save > 0 %}{{ 'products.product.save_amount' | t: amount: save_money }}{% endif %}"
+              data-available="{{ row.available }}"
+              data-stock-state="{{ row_st }}"
+              data-stock-text="{{ row_txt | escape }}"
+              {% if row.id == v.id %}checked{% endif %}
+              {% unless row.available %}disabled{% endunless %}
+            >
+            <span class="pack__dot" aria-hidden="true"></span>
+            <span class="pack__body">
+              <span class="pack__name">{{ row.title }}</span>
+              {%- if units > 1 -%}
+                <span class="pack__meta">{{ 'products.product.each' | t: amount: each_money }}</span>
+              {%- endif -%}
+            </span>
+            <span class="pack__cost">
+              <span class="pack__sum">{{ row.price | money }}</span>
+              {%- if save > 0 -%}
+                <span class="pack__save">{{ 'products.product.save_amount' | t: amount: save_money }}</span>
+              {%- endif -%}
+            </span>
+          </label>
+        {%- endfor -%}
+      </div>
+    {%- endunless -%}
+
+    <div class="offer__buy">
+      {%- if show_qty -%}
+        <div class="qty">
+          <button type="button" data-qty="down" aria-label="{{ 'products.product.decrease' | t }}">&minus;</button>
+          <input type="number" name="quantity" value="1" min="1" aria-label="{{ 'products.product.quantity' | t }}">
+          <button type="button" data-qty="up" aria-label="{{ 'products.product.increase' | t }}">+</button>
+        </div>
+      {%- else -%}
+        <input type="hidden" name="quantity" value="1">
+      {%- endif -%}
+
+      <button
+        type="submit"
+        class="btn btn--primary btn--lg{% unless show_qty %} btn--full{% endunless %}"
+        data-add
+        {% if anchor %}data-buy-anchor{% endif %}
+        {% unless v.available %}disabled{% endunless %}
+      >
+        {%- if v.available -%}
+          {{ 'products.product.add_to_cart' | t }}
+        {%- else -%}
+          {{ 'products.product.sold_out' | t }}
+        {%- endif -%}
+      </button>
+    </div>
+
+    <p class="cart-error" data-cart-error hidden></p>
+  {%- endform -%}
+
+  {%- if a1 != blank or a2 != blank or a3 != blank -%}
+    <div class="assure">
+      <ul role="list">
+        {%- if a1 != blank -%}<li>{%- render 'icon', name: 'check' -%}<span>{{ a1 }}</span></li>{%- endif -%}
+        {%- if a2 != blank -%}<li>{%- render 'icon', name: 'check' -%}<span>{{ a2 }}</span></li>{%- endif -%}
+        {%- if a3 != blank -%}<li>{%- render 'icon', name: 'check' -%}<span>{{ a3 }}</span></li>{%- endif -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</div>
