@@ -445,3 +445,72 @@
   background: none;
   color: var(--color-primary);
 }
+
+/* --------------------------------------------------------------------------
+   Description
+
+   Everything else in the buy column is styled; base.css gives the description
+   only a muted colour, so it lands as a grey block with browser bullets in the
+   middle of a designed page. These rules give it the same vocabulary as the
+   trust row above it: a tinted disc, a brand tick, and a clear lead line.
+   -------------------------------------------------------------------------- */
+.product__description {
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  line-height: 1.65;
+}
+
+/* The opening line is the promise, so it reads as a lead rather than filler. */
+.product__description > p:first-of-type {
+  color: var(--color-text);
+  font-size: var(--text-lg);
+}
+
+.product__description ul {
+  list-style: none;
+  padding-left: 0;
+  margin-block: var(--space-lg);
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.product__description ul li {
+  position: relative;
+  padding-left: 2rem;
+}
+
+/* Disc and tick are drawn rather than loaded, so they take the brand colour
+   from the theme settings like everything else on the page. */
+.product__description ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-soft);
+}
+
+.product__description ul li::after {
+  content: "";
+  position: absolute;
+  left: 0.45rem;
+  top: 0.4em;
+  width: 0.3rem;
+  height: 0.6rem;
+  border: solid var(--color-primary);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.product__description ul strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* The closing line lands as a sign-off, not as one more paragraph. */
+.product__description > p:last-child {
+  color: var(--color-text);
+  font-weight: 600;
+}
