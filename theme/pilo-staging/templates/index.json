@@ -382,12 +382,12 @@
         "row_mNg7a3": {
           "type": "row",
           "settings": {
-            "label": "Delivered across Lebanon in 1–5 days",
+            "label": "Free delivery, no minimum spend",
             "note": "",
             "mine": "yes",
-            "mine_note": "",
-            "theirs": "no",
-            "theirs_note": "Often weeks by post"
+            "mine_note": "1–5 days across Lebanon",
+            "theirs": "partial",
+            "theirs_note": "Often only above a spend threshold"
           }
         }
       },
@@ -404,7 +404,7 @@
         "text": "<p>Plenty of pillows claim ergonomic support. Here is what you actually get, and where the category is split.</p>",
         "mine_label": "Pilo 1.0",
         "theirs_label": "Most ergonomic pillows",
-        "footnote": "Based on pillows sold in Lebanon at a comparable price, September 2026.",
+        "footnote": "Based on ergonomic and memory foam pillows sold online in Lebanon, October 2026.",
         "button_label": "Choose your pack",
         "button_link": "/#buy",
         "max_width": 820,
