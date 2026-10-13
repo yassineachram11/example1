@@ -59,7 +59,7 @@
           "type": "title",
           "settings": {
             "title": "",
-            "subtitle": "The contour pillow that keeps your neck aligned all night."
+            "subtitle": "Adaptive contour memory foam with a zip-off cooling cover. 40 × 16 × 16 cm."
           }
         },
         "judge_me_reviews_preview_badge_hEeaBQ": {
@@ -505,15 +505,8 @@
         "q2": {
           "type": "question",
           "settings": {
-            "question": "When will I get my order?",
-            "answer": "<p>We confirm every order by phone or WhatsApp, then send it out. Delivery takes 1–5 days depending on where you are in Lebanon.</p>"
-          }
-        },
-        "q3": {
-          "type": "question",
-          "settings": {
-            "question": "How much does shipping cost?",
-            "answer": "<p>It's FREE!</p>"
+            "question": "How long does delivery take, and what does it cost?",
+            "answer": "<p>Delivery is free anywhere in Lebanon. We confirm every order by phone or WhatsApp, then send it out — it reaches you in 1–5 days depending on where you are.</p>"
           }
         },
         "q_cod": {
@@ -532,16 +525,15 @@
         }
       },
       "block_order": [
-        "q_made",
-        "q_size",
+        "q_cod",
+        "q2",
+        "q1",
         "q_position",
         "q_adjust",
+        "q_made",
+        "q_size",
         "q_wash",
-        "question_tB3gYX",
-        "q2",
-        "q3",
-        "q_cod",
-        "q1"
+        "question_tB3gYX"
       ],
       "settings": {
         "eyebrow": "",
