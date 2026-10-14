@@ -99,7 +99,10 @@
             "add_bg": "#385e88",
             "add_text": "",
             "now_bg": "",
-            "now_text": ""
+            "now_text": "",
+            "stock_batch_total": 90,
+            "stock_bar_label": "[claimed] of [total] claimed",
+            "stock_bar_min": 10
           }
         },
         "description": {

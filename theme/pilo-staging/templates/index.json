@@ -97,7 +97,10 @@
             "show_dynamic_checkout": true,
             "full_width": false,
             "radius": 8,
-            "add_bg": "#385e88"
+            "add_bg": "#385e88",
+            "stock_batch_total": 90,
+            "stock_bar_label": "[claimed] of [total] claimed",
+            "stock_bar_min": 10
           }
         },
         "trust": {

@@ -1,0 +1,137 @@
+{%- comment -%}
+  Stock level indicator, shown above the quantity selector.
+
+  Renders the line for the variant on screen and, alongside it, a small JSON map
+  of every variant so stock-level.js can swap the text when the shopper changes
+  pack without a page load. The state logic lives here only — the JS just looks
+  up a pre-rendered string.
+
+  Accepts:
+    product          - the product
+    variant          - the variant currently selected
+    threshold        - show "low" at or below this many units
+    in_label         - text when comfortably in stock
+    low_label        - text when low; [count] is replaced by the number left
+    out_label        - text when unavailable
+    backorder_label  - text when out of stock but still sellable
+    batch_total      - pillows in the batch; 0 or blank hides the bar
+    bar_label        - bar wording; [claimed] [left] [total] are replaced
+    bar_min          - hide the bar until this percent has been claimed
+{%- endcomment -%}
+
+{%- liquid
+  assign current_state = ''
+  assign current_text = ''
+-%}
+
+{%- capture stock_json -%}
+{
+{%- for v in product.variants -%}
+  {%- liquid
+    assign count = v.inventory_quantity
+
+    comment
+      Untracked inventory has no number to show, so it can only ever report
+      the in-stock wording, which is what Shopify itself assumes when it
+      lets the variant be bought.
+    endcomment
+    if v.available == false
+      assign state = 'out'
+      assign text = out_label
+    elsif v.inventory_management == blank
+      assign state = 'in'
+      assign text = in_label
+    elsif count > 0 and count <= threshold
+      assign state = 'low'
+      assign text = low_label | replace: '[count]', count
+    elsif count > 0
+      assign state = 'in'
+      assign text = in_label
+    else
+      comment
+        Available, tracked, and nothing on the shelf: the variant is set to
+        keep selling when sold out.
+      endcomment
+      assign state = 'backorder'
+      assign text = backorder_label
+    endif
+
+    if v.id == variant.id
+      assign current_state = state
+      assign current_text = text
+    endif
+  -%}
+  "{{ v.id }}": { "state": {{ state | json }}, "text": {{ text | json }} }{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+}
+{%- endcapture -%}
+
+{%- if current_text != blank -%}
+  <p class="stock stock--{{ current_state }}" data-stock-level>
+    <span class="stock__dot" aria-hidden="true"></span>
+    <span class="stock__text" data-stock-text>{{ current_text }}</span>
+  </p>
+  <script type="application/json" data-stock-json>{{ stock_json }}</script>
+{%- endif -%}
+
+{%- comment -%}
+  Batch progress. One bar for the whole page rather than one per pack: the
+  packs all draw on the same component, so there is only ever one batch
+  selling down, and a bar that changed when you clicked 2-pack would be
+  describing nothing real.
+
+  The count is Shopify's. Only the batch size is a setting, and if the shop
+  holds more than the stated batch the claimed figure floors at zero rather
+  than going negative, which also means the bar stays hidden until the two
+  agree.
+{%- endcomment -%}
+{%- if batch_total > 0 -%}
+  {%- liquid
+    assign pool = 0
+    for v in product.variants
+      comment
+        Shopify's to_i reads the leading number off "2-pack", so a variant's
+        own title says how many pillows one of it costs the batch.
+      endcomment
+      assign units = v.title | times: 1
+      if units < 1
+        assign units = 1
+      endif
+      assign candidate = v.inventory_quantity | times: units
+      if candidate > pool
+        assign pool = candidate
+      endif
+    endfor
+
+    assign claimed = batch_total | minus: pool
+    if claimed < 0
+      assign claimed = 0
+    endif
+    if claimed > batch_total
+      assign claimed = batch_total
+    endif
+    assign left = batch_total | minus: claimed
+    assign pct = claimed | times: 100 | divided_by: batch_total
+
+    assign bar_text = bar_label | default: '[claimed] of [total] claimed'
+    assign bar_text = bar_text | replace: '[claimed]', claimed
+    assign bar_text = bar_text | replace: '[left]', left
+    assign bar_text = bar_text | replace: '[total]', batch_total
+  -%}
+
+  {%- if pool > 0 and pct >= bar_min -%}
+    <div class="stock-bar" data-stock-bar>
+      <div
+        class="stock-bar__track"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="{{ batch_total }}"
+        aria-valuenow="{{ claimed }}"
+        aria-label="{{ bar_text | escape }}"
+      >
+        <span class="stock-bar__fill" style="width: {{ pct }}%;"></span>
+      </div>
+      <p class="stock-bar__label">{{ bar_text }}</p>
+    </div>
+  {%- endif -%}
+{%- endif -%}
