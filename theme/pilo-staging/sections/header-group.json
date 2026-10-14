@@ -20,7 +20,7 @@
         "announcement_icon": "truck",
         "announcement_background": "#2c3845",
         "announcement_text_color": "#ffffff",
-        "show_countdown": false,
+        "show_countdown": true,
         "countdown_label": "Launch offer ends in",
         "countdown_date": "2026-11-18",
         "countdown_hour": 23,
