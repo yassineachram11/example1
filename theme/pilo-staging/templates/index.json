@@ -541,10 +541,36 @@
         "open_first": false,
         "enable_schema": true
       }
+    },
+    "the-problem": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/pilo-neck-angle-real.png",
+        "image_position": "left",
+        "eyebrow": "The problem",
+        "heading": "It's probably not your mattress.",
+        "text": "<p>A flat pillow lets your head drop and your neck bend out of line — for seven or eight hours, every night. You wake up stiff, blame the desk, and book another physio session. The cause is under your head.</p>",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "how-it-works": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/pilo-contour-in-use.png",
+        "image_position": "right",
+        "eyebrow": "How it works",
+        "heading": "A contour that holds your neck where it should be.",
+        "text": "<p>Pilo is shaped in zones: a <strong>cervical extension zone</strong> that supports the curve of your neck, a lower <strong>head support zone</strong> so your head doesn't tip forward, and <strong>arm support zones</strong> at the sides for side sleepers. Adaptive memory foam holds the shape all night, under a breathable cooling cover.</p>",
+        "button_label": "",
+        "button_link": ""
+      }
     }
   },
   "order": [
     "hero",
+    "the-problem",
+    "how-it-works",
     "buy",
     "ugc",
     "reviews",
