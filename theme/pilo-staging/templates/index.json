@@ -86,7 +86,7 @@
           "settings": {
             "show_quantity": false,
             "show_stock": true,
-            "stock_threshold": 10,
+            "stock_threshold": 35,
             "stock_in_label": "In stock",
             "stock_low_label": "Only [count] left",
             "stock_out_label": "Out of stock",
